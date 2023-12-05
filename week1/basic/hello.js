@@ -16,12 +16,11 @@ function findMaxByField(arr, field) {
 async function main() {
   try {
     // Fetch data
-    const [usersData, postsData, commentsData] = Promise.all([
+    const [usersData, postsData, commentsData] = await Promise.all([
       fetchURL("users"),
       fetchURL("posts"),
       fetchURL("comments"),
     ]);
-
     // 3. Get all the posts and comments from the API. Map the data with the users array.
     const usersMap = usersData.map((user) => ({
       id: user.id,
@@ -31,7 +30,6 @@ async function main() {
       comments: commentsData.filter((comment) => comment.email === user.email),
       posts: postsData.filter((post) => post.userId === user.id),
     }));
-    console.log(usersMap);
 
     // 4. Filter only users with more than 3 comments.
     const usersWithMoreThan3Comments = usersMap.filter(
@@ -50,7 +48,6 @@ async function main() {
     // 6. Who is the user with the most comments/posts?
     const userWithMostComment = findMaxByField(usersReformat, "commentsCount");
     const userWithMostPost = findMaxByField(usersReformat, "postsCount");
-    console.log(userWithMostPost);
 
     // 7. Sort the list of users by the postsCount value descending?
     const usersSort = usersReformat;
