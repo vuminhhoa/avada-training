@@ -14,16 +14,17 @@
   "email": "anhnt@avada.io",
   "license": "MIT",
   "dependencies": {
+    "faker": "^5.4.0",
     "koa": "^2.13.1",
     "koa-body": "^4.2.0",
+    "koa-ejs": "^4.3.0",
     "koa-router": "^10.0.0",
-    "yup": "^0.32.9",
-    "faker": "^5.4.0"
+    "yup": "^0.32.9"
   },
   "devDependencies": {
-    "nodemon": "^1.18.4",
     "@babel/cli": "^7.6.0",
     "@babel/core": "^7.6.0",
-    "@babel/preset-env": "^7.6.0"
+    "@babel/preset-env": "^7.6.0",
+    "nodemon": "^1.18.4"
   }
 }
