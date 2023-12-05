@@ -1,5 +1,4 @@
 const URL = "https://jsonplaceholder.typicode.com";
-const fs = require("fs");
 
 async function fetchURL(url) {
   const data = await fetch(`${URL}/${url}`);
