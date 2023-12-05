@@ -14,11 +14,14 @@ function findMaxByField(arr, field) {
   }, null);
 }
 
-async function fetchData() {
+async function main() {
   try {
-    const usersData = await fetchURL("users");
-    const postsData = await fetchURL("posts");
-    const commentsData = await fetchURL("comments");
+    // Fetch data
+    const [usersData, postsData, commentsData] = Promise.all([
+      fetchURL("users"),
+      fetchURL("posts"),
+      fetchURL("comments"),
+    ]);
 
     // 3. Get all the posts and comments from the API. Map the data with the users array.
     const usersMap = usersData.map((user) => ({
@@ -29,6 +32,7 @@ async function fetchData() {
       comments: commentsData.filter((comment) => comment.email === user.email),
       posts: postsData.filter((post) => post.userId === user.id),
     }));
+    console.log(usersMap);
 
     // 4. Filter only users with more than 3 comments.
     const usersWithMoreThan3Comments = usersMap.filter(
@@ -63,9 +67,8 @@ async function fetchData() {
       body: postWithID1.body,
       comments: commentsForPostID1,
     };
-  } catch (error) {
-    console.error("Something went wrong: ", error);
+  } catch (err) {
+    return err;
   }
 }
-
-fetchData();
+main();
