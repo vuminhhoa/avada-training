@@ -56,14 +56,18 @@ async function main() {
     usersSort.sort((a, b) => b.postsCount - a.postsCount);
 
     // 8. Get the post with ID of 1 via API request, at the same time get comments for post ID of 1 via another API request
-    const postWithID1 = await fetchURL(`/posts/1`);
-    const commentsForPostID1 = await fetchURL(`/comments?postId=1`);
+    const id = 1;
+    const [postWithID, commentsForPostID] = await Promise.all([
+      fetchURL(`/posts/${id}`),
+      fetchURL(`/comments?postId=${id}`),
+    ]);
+
     const postReformat = {
-      userId: postWithID1.userId,
-      id: postWithID1.id,
-      title: postWithID1.title,
-      body: postWithID1.body,
-      comments: commentsForPostID1,
+      userId: postWithID.userId,
+      id: postWithID.id,
+      title: postWithID.title,
+      body: postWithID.body,
+      comments: commentsForPostID,
     };
   } catch (err) {
     console.log(err);
