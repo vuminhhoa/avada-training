@@ -10,7 +10,6 @@ export default async function productInputMiddleware(ctx, next) {
       description: yup.string().required(),
       product: yup.string().required(),
       color: yup.string().required(),
-      createdAt: yup.date().required(),
       image: yup.string().required(),
     });
 

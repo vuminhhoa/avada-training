@@ -4,13 +4,29 @@ import {
   add as addProduct,
   remove as removeProduct,
   update as updateProduct,
+  getFields as getFieldsProduct,
+  getLimits as getLimitsProduct,
+  sortAsc as sortAscProduct,
+  sortDesc as sortDescProduct,
 } from "../../database/productRepository";
 
 export async function getProducts(ctx) {
   try {
     const { limits, sort } = ctx.query;
-    const products = getAllProducts({ limits, sort });
+    let products = getAllProducts();
 
+    if (sort) {
+      if (sort === "asc") {
+        sortAscProduct(products, sort);
+      }
+      if (sort === "desc") {
+        sortDescProduct(products, sort);
+      }
+    }
+
+    if (limits) {
+      products = getLimitsProduct(products, limits);
+    }
     ctx.body = {
       data: products,
     };
@@ -28,10 +44,13 @@ export async function getProduct(ctx) {
   try {
     const { id } = ctx.params;
     const { fields } = ctx.query;
-    const getCurrentProduct = getOneProduct(id, { fields });
-    if (getCurrentProduct) {
+    let currentProduct = getOneProduct(id);
+    if (currentProduct) {
+      if (fields) {
+        currentProduct = getFieldsProduct(currentProduct, fields);
+      }
       return (ctx.body = {
-        data: getCurrentProduct,
+        data: currentProduct,
       });
     }
 
@@ -48,8 +67,8 @@ export async function getProduct(ctx) {
 export async function deleteProduct(ctx) {
   try {
     const { id } = ctx.params;
-    const getCurrentProduct = getOneProduct({ id });
-    if (getCurrentProduct) {
+    const currentProduct = getOneProduct(id);
+    if (currentProduct) {
       removeProduct(id);
       return (ctx.body = {
         success: true,
@@ -58,7 +77,6 @@ export async function deleteProduct(ctx) {
 
     throw new Error("Product Not Found with that id!");
   } catch (e) {
-    ctx.status = 404;
     return (ctx.body = {
       success: false,
       error: e.message,
@@ -69,8 +87,8 @@ export async function updateOneProduct(ctx) {
   try {
     const data = ctx.request.body;
     const { id } = ctx.params;
-    const getCurrentProduct = getOneProduct(id);
-    if (getCurrentProduct) {
+    const currentProduct = getOneProduct(id);
+    if (currentProduct) {
       updateProduct(id, data);
       return (ctx.body = {
         success: true,
@@ -90,7 +108,13 @@ export async function updateOneProduct(ctx) {
 export async function save(ctx) {
   try {
     const postData = ctx.request.body;
-    addProduct(postData);
+    const isHas = getOneProduct(postData.id);
+    if (isHas) {
+      throw new Error("Product Found with that id!");
+    } else {
+      const currentDate = new Date();
+      addProduct({ ...postData, createdAt: currentDate.toISOString() });
+    }
 
     ctx.status = 201;
     return (ctx.body = {
