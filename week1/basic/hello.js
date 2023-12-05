@@ -10,7 +10,7 @@ function findMaxByField(arr, field) {
       return currentElement;
     }
     return maxElement;
-  }, null);
+  });
 }
 
 async function main() {
@@ -21,6 +21,7 @@ async function main() {
       fetchURL("posts"),
       fetchURL("comments"),
     ]);
+
     // 3. Get all the posts and comments from the API. Map the data with the users array.
     const usersMap = usersData.map((user) => ({
       id: user.id,
@@ -45,6 +46,7 @@ async function main() {
       commentsCount: item?.comments?.length,
       postsCount: item?.posts?.length,
     }));
+
     // 6. Who is the user with the most comments/posts?
     const userWithMostComment = findMaxByField(usersReformat, "commentsCount");
     const userWithMostPost = findMaxByField(usersReformat, "postsCount");
@@ -54,8 +56,8 @@ async function main() {
     usersSort.sort((a, b) => b.postsCount - a.postsCount);
 
     // 8. Get the post with ID of 1 via API request, at the same time get comments for post ID of 1 via another API request
-    const postWithID1 = postsData.find((item) => item.id === 1);
-    const commentsForPostID1 = commentsData.filter((item) => item.postId === 1);
+    const postWithID1 = await fetchURL(`/posts/1`);
+    const commentsForPostID1 = await fetchURL(`/comments?postId=1`);
     const postReformat = {
       userId: postWithID1.userId,
       id: postWithID1.id,
@@ -64,7 +66,7 @@ async function main() {
       comments: commentsForPostID1,
     };
   } catch (err) {
-    return err;
+    console.log(err);
   }
 }
 main();
