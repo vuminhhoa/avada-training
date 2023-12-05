@@ -3,13 +3,17 @@ import * as bookHandler from "../handlers/books/bookHandlers";
 import * as productHandler from "../handlers/products/productHandlers";
 import bookInputMiddleware from "../middleware/bookInputMiddleware";
 import productInputMiddleware from "../middleware/productInputMiddleware";
+import { getAll as getAllProducts } from "../database/productRepository";
 
-// Prefix all routes with /books
 const router = new Router({
   prefix: "/api",
 });
 
-// Routes will go here
+router.get("/views/products", async (ctx) => {
+  const products = getAllProducts();
+
+  await ctx.render("pages/product", { products });
+});
 
 router.get("/books", bookHandler.getBooks);
 router.get("/books/:id", bookHandler.getBook);
