@@ -13,6 +13,20 @@ function findMaxByField(arr, field) {
   });
 }
 
+async function getPostWithComments(id) {
+  const [postWithID, commentsForPostID] = await Promise.all([
+    fetchURL(`/posts/${id}`),
+    fetchURL(`/comments?postId=${id}`),
+  ]);
+  return {
+    userId: postWithID.userId,
+    id: postWithID.id,
+    title: postWithID.title,
+    body: postWithID.body,
+    comments: commentsForPostID,
+  };
+}
+
 async function main() {
   try {
     // Fetch data
@@ -56,19 +70,7 @@ async function main() {
     usersSort.sort((a, b) => b.postsCount - a.postsCount);
 
     // 8. Get the post with ID of 1 via API request, at the same time get comments for post ID of 1 via another API request
-    const id = 1;
-    const [postWithID, commentsForPostID] = await Promise.all([
-      fetchURL(`/posts/${id}`),
-      fetchURL(`/comments?postId=${id}`),
-    ]);
-
-    const postReformat = {
-      userId: postWithID.userId,
-      id: postWithID.id,
-      title: postWithID.title,
-      body: postWithID.body,
-      comments: commentsForPostID,
-    };
+    const post = await getPostWithComments(1);
   } catch (err) {
     console.log(err);
   }
