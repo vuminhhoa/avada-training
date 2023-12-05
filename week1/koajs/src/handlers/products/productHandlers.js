@@ -3,17 +3,13 @@ import {
   getOne as getOneProduct,
   add as addProduct,
   remove as removeProduct,
-  update as removeProduct,
+  update as updateProduct,
 } from "../../database/productRepository";
 
-/**
- *
- * @param ctx
- * @returns {Promise<void>}
- */
 export async function getProducts(ctx) {
   try {
-    const products = getAllProducts();
+    const { limits, sort } = ctx.query;
+    const products = getAllProducts({ limits, sort });
 
     ctx.body = {
       data: products,
@@ -28,15 +24,11 @@ export async function getProducts(ctx) {
   }
 }
 
-/**
- *
- * @param ctx
- * @returns {Promise<{data: {author: string, name: string, id: number}}|{success: boolean, error: *}|{message: string, status: string}>}
- */
 export async function getProduct(ctx) {
   try {
     const { id } = ctx.params;
-    const getCurrentProduct = getOneProduct(id);
+    const { fields } = ctx.query;
+    const getCurrentProduct = getOneProduct(id, { fields });
     if (getCurrentProduct) {
       return (ctx.body = {
         data: getCurrentProduct,
@@ -56,7 +48,7 @@ export async function getProduct(ctx) {
 export async function deleteProduct(ctx) {
   try {
     const { id } = ctx.params;
-    const getCurrentProduct = getOneProduct(id);
+    const getCurrentProduct = getOneProduct({ id });
     if (getCurrentProduct) {
       removeProduct(id);
       return (ctx.body = {
@@ -73,13 +65,13 @@ export async function deleteProduct(ctx) {
     });
   }
 }
-export async function updateProduct(ctx) {
+export async function updateOneProduct(ctx) {
   try {
+    const data = ctx.request.body;
     const { id } = ctx.params;
-    const { data } = ctx.body;
     const getCurrentProduct = getOneProduct(id);
     if (getCurrentProduct) {
-      removeProduct(id);
+      updateProduct(id, data);
       return (ctx.body = {
         success: true,
       });
@@ -95,11 +87,6 @@ export async function updateProduct(ctx) {
   }
 }
 
-/**
- *
- * @param ctx
- * @returns {Promise<{success: boolean, error: *}|{success: boolean}>}
- */
 export async function save(ctx) {
   try {
     const postData = ctx.request.body;

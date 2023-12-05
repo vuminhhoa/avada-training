@@ -18,6 +18,7 @@ router.post("/books", bookInputMiddleware, bookHandler.save);
 router.get("/products", productHandler.getProducts);
 router.get("/products/:id", productHandler.getProduct);
 router.post("/products", productInputMiddleware, productHandler.save);
+router.put("/products/:id", productHandler.updateOneProduct);
 router.delete("/products/:id", productHandler.deleteProduct);
 
 export default router;

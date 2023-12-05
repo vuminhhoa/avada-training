@@ -1,27 +1,30 @@
 import fs from "fs";
 const { data: products } = require("./products.json");
 
-/**
- *
- * @returns {[{author: string, name: string, id: number}, {author: string, name: string, id: number}, {author: string, name: string, id: number}, {author: string, name: string, id: number}]}
- */
-export function getAll() {
-  return products;
+export function getAll({ limits, sort } = {}) {
+  let result = [...products];
+
+  if (sort) {
+    if (sort === "asc") {
+      result.sort((a, b) => a.id - b.id);
+    } else if (sort === "desc") {
+      result.sort((a, b) => b.id - a.id);
+    }
+  }
+
+  if (limits) {
+    result = result.slice(0, limits);
+  }
+  return result;
 }
 
-/**
- *
- * @param id
- * @returns {{author: string, name: string, id: number} | {author: string, name: string, id: number} | {author: string, name: string, id: number} | {author: string, name: string, id: number}}
- */
-export function getOne(id) {
-  return products.find((product) => product.id === parseInt(id));
+export function getOne(id, { fields } = {}) {
+  const product = products.find((product) => product.id === parseInt(id));
+  if (fields) {
+    return product[fields];
+  }
+  return product;
 }
-
-/**
- *
- * @param data
- */
 
 export function remove(id) {
   const index = products.findIndex((product) => product.id === parseInt(id));
@@ -33,12 +36,10 @@ export function remove(id) {
 }
 
 export function update(id, newData) {
-  const productIndex = products.findIndex(
-    (product) => product.id === parseInt(id)
-  );
-  products[productIndex] = { ...products[productIndex], ...newData };
+  const index = products.findIndex((product) => product.id === parseInt(id));
+  products[index] = { ...products[index], ...newData };
   return fs.writeFileSync(
-    "./products.json",
+    "./src/database/products.json",
     JSON.stringify({ data: products })
   );
 }
