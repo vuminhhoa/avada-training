@@ -9,6 +9,7 @@ import {
   sortAsc as sortAscProduct,
   sortDesc as sortDescProduct,
 } from "../../database/productRepository";
+import { successHandler, errorHandler } from "../responses/responseHandlers";
 
 export async function getProducts(ctx) {
   try {
@@ -27,16 +28,9 @@ export async function getProducts(ctx) {
     if (limits) {
       products = getLimitsProduct(products, limits);
     }
-    ctx.body = {
-      data: products,
-    };
+    return successHandler(ctx, products, 200);
   } catch (e) {
-    ctx.status = 404;
-    ctx.body = {
-      success: false,
-      data: [],
-      error: e.message,
-    };
+    return errorHandler(ctx, e);
   }
 }
 
@@ -49,18 +43,11 @@ export async function getProduct(ctx) {
       if (fields) {
         currentProduct = getFieldsProduct(currentProduct, fields);
       }
-      return (ctx.body = {
-        data: currentProduct,
-      });
+      return successHandler(ctx, currentProduct, 200);
     }
-
-    throw new Error("Product Not Found with that id!");
+    return errorHandler(ctx, "Product Not Found with that id!");
   } catch (e) {
-    ctx.status = 404;
-    return (ctx.body = {
-      success: false,
-      error: e.message,
-    });
+    return errorHandler(ctx, e);
   }
 }
 
@@ -70,17 +57,11 @@ export async function deleteProduct(ctx) {
     const currentProduct = getOneProduct(id);
     if (currentProduct) {
       removeProduct(id);
-      return (ctx.body = {
-        success: true,
-      });
+      return successHandler(ctx, {}, 200);
     }
-
-    throw new Error("Product Not Found with that id!");
+    return errorHandler(ctx, "Product Not Found with that id!");
   } catch (e) {
-    return (ctx.body = {
-      success: false,
-      error: e.message,
-    });
+    return errorHandler(ctx, e);
   }
 }
 export async function updateOneProduct(ctx) {
@@ -90,18 +71,12 @@ export async function updateOneProduct(ctx) {
     const currentProduct = getOneProduct(id);
     if (currentProduct) {
       updateProduct(id, data);
-      return (ctx.body = {
-        success: true,
-      });
+      return successHandler(ctx, {}, 200);
     }
 
-    throw new Error("Product Not Found with that id!");
+    return errorHandler(ctx, "Product Not Found with that id!");
   } catch (e) {
-    ctx.status = 404;
-    return (ctx.body = {
-      success: false,
-      error: e.message,
-    });
+    return errorHandler(ctx, e);
   }
 }
 
@@ -110,20 +85,14 @@ export async function save(ctx) {
     const postData = ctx.request.body;
     const isHas = getOneProduct(postData.id);
     if (isHas) {
-      throw new Error("Product Found with that id!");
+      return errorHandler(ctx, "Product Found with that id!");
     } else {
       const currentDate = new Date();
       addProduct({ ...postData, createdAt: currentDate.toISOString() });
     }
 
-    ctx.status = 201;
-    return (ctx.body = {
-      success: true,
-    });
+    return successHandler(ctx, {}, 200);
   } catch (e) {
-    return (ctx.body = {
-      success: false,
-      error: e.message,
-    });
+    return errorHandler(ctx, e);
   }
 }
