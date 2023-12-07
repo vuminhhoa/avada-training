@@ -3,6 +3,7 @@ import koaBody from "koa-body";
 import routes from "./routes/routes.js";
 import render from "koa-ejs";
 import path from "path";
+import cors from "@koa/cors";
 const app = new Koa();
 
 render(app, {
@@ -13,7 +14,9 @@ render(app, {
   debug: true,
 });
 
-app.use(koaBody());
+app.use(cors());
+app.use(koaBody({ parsedMethods: ["GET", "POST", "PUT", "PATCH", "DELETE"] }));
+
 app.use(routes.routes());
 app.use(routes.allowedMethods());
 

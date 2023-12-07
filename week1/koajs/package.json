@@ -14,6 +14,7 @@
   "email": "anhnt@avada.io",
   "license": "MIT",
   "dependencies": {
+    "@koa/cors": "^4.0.0",
     "faker": "^5.4.0",
     "koa": "^2.13.1",
     "koa-body": "^4.2.0",

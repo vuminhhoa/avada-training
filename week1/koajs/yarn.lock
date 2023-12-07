@@ -990,6 +990,13 @@
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
 
+"@koa/cors@^4.0.0":
+  "integrity" "sha512-Y4RrbvGTlAaa04DBoPBWJqDR5gPj32OOz827ULXfgB1F7piD1MB/zwn8JR2LAnvdILhxUbXbkXGWuNVsFuVFCQ=="
+  "resolved" "https://registry.npmjs.org/@koa/cors/-/cors-4.0.0.tgz"
+  "version" "4.0.0"
+  dependencies:
+    "vary" "^1.1.2"
+
 "@nicolo-ribaudo/chokidar-2@2.1.8-no-fsevents.3":
   "integrity" "sha512-s88O1aVtXftvp5bCPB7WnmXc5IwOZZ7YPuwNPt+GtOOXpPvad1LfbmjYv+qII7zP6RU2QGnqve27dnLycEnyEQ=="
   "resolved" "https://registry.npmjs.org/@nicolo-ribaudo/chokidar-2/-/chokidar-2-2.1.8-no-fsevents.3.tgz"
