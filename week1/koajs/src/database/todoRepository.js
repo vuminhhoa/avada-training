@@ -1,5 +1,6 @@
 import { writeDatabase, getIndexFromId } from "../utils/repositoryUtils";
 const { data: todos } = require("./todos.json");
+const file = "todos.json";
 
 export function getAll() {
   return todos;
@@ -12,16 +13,16 @@ export function getOne(id) {
 export function remove(id) {
   const index = getIndexFromId(id, todos);
   todos.splice(index, 1)[0];
-  return writeDatabase(todos);
+  return writeDatabase(todos, file);
 }
 
 export function update(id, newData) {
   const index = getIndexFromId(id, todos);
   todos[index] = { ...todos[index], ...newData };
-  return writeDatabase(todos);
+  return writeDatabase(todos, file);
 }
 
 export function add(data) {
   const updatedTodos = [data, ...todos];
-  return writeDatabase(updatedTodos);
+  return writeDatabase(updatedTodos, file);
 }

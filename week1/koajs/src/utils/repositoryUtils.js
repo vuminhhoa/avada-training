@@ -1,8 +1,9 @@
 import fs from "fs";
 
-export function writeDatabase(data) {
+export function writeDatabase(data, file) {
+  console.log(file);
   return fs.writeFileSync(
-    "./src/database/products.json",
+    `./src/database/${file}`,
     JSON.stringify({ data: data })
   );
 }
