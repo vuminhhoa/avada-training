@@ -1,38 +1,5 @@
-import fs from "fs";
+import { writeDatabase, getIndexFromId } from "../utils/repositoryUtils";
 const { data: products } = require("./products.json");
-
-export function writeDatabase(data) {
-  return fs.writeFileSync(
-    "./src/database/products.json",
-    JSON.stringify({ data: data })
-  );
-}
-
-export function getIndexFromId(id, data) {
-  const currentItem = data.find((item) => item.id === parseInt(id));
-  return data.indexOf(currentItem);
-}
-
-export function sortDesc(data) {
-  return data.sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt));
-}
-
-export function sortAsc(data) {
-  return data.sort((a, b) => Date.parse(a.createdAt) - Date.parse(b.createdAt));
-}
-
-export function getFields(data, fields) {
-  fields = fields.split(",");
-  let dataFields = {};
-  fields.forEach((field) => {
-    dataFields[field] = data[field];
-  });
-  return dataFields;
-}
-
-export function getLimits(data, limits) {
-  return data.slice(0, limits);
-}
 
 export function getAll() {
   return products;

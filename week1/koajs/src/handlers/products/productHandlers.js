@@ -4,12 +4,14 @@ import {
   add as addProduct,
   remove as removeProduct,
   update as updateProduct,
+} from "../../database/productRepository";
+import {
   getFields as getFieldsProduct,
   getLimits as getLimitsProduct,
-  sortAsc as sortAscProduct,
-  sortDesc as sortDescProduct,
-} from "../../database/productRepository";
-import { successHandler, errorHandler } from "../responses/responseHandlers";
+  sortAscByField as sortAscProduct,
+  sortDescByField as sortDescProduct,
+} from "../../utils/repositoryUtils";
+import { successHandler, errorHandler } from "../../utils/responseHandlers";
 
 export async function getProducts(ctx) {
   try {
@@ -18,10 +20,10 @@ export async function getProducts(ctx) {
 
     if (sort) {
       if (sort === "asc") {
-        sortAscProduct(products, sort);
+        sortAscProduct(products, "createdAt");
       }
       if (sort === "desc") {
-        sortDescProduct(products, sort);
+        sortDescProduct(products, "createdAt");
       }
     }
 

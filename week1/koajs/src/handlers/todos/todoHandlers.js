@@ -4,12 +4,14 @@ import {
   add as addTodo,
   remove as removeTodo,
   update as updateTodo,
+} from "../../database/todoRepository";
+import {
   getFields as getFieldsTodo,
   getLimits as getLimitsTodo,
   sortAscByField as sortAscTodo,
   sortDescByField as sortDescTodo,
-} from "../../database/todoRepository";
-import { successHandler, errorHandler } from "../responses/responseHandlers";
+} from "../../utils/repositoryUtils";
+import { successHandler, errorHandler } from "../../utils/responseHandlers";
 
 export async function getTodos(ctx) {
   try {

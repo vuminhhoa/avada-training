@@ -1,5 +1,5 @@
 import yup from "yup";
-import { errorHandler } from "../handlers/responses/responseHandlers";
+import { errorHandler } from "../utils/responseHandlers";
 export default async function todoInputMiddleware(ctx, next) {
   try {
     const postData = ctx.request.body;
