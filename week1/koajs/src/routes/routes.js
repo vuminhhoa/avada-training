@@ -29,7 +29,7 @@ router.delete("/products/:id", productHandler.deleteProduct);
 
 router.get("/todos", todoHandler.getTodos);
 router.get("/todos/:id", todoHandler.getTodo);
-router.post("/todos", todoInputMiddleware, todoHandler.save);
+router.post("/todos", todoHandler.save);
 router.put("/todos/:id", todoHandler.updateOneTodo);
 router.delete("/todos/:id", todoHandler.deleteTodo);
 export default router;
