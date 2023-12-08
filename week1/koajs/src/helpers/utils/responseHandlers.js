@@ -1,4 +1,4 @@
-export function successHandler(ctx, data, status) {
+export function successHandler(ctx, data, status = 200) {
   ctx.status = status;
   ctx.body = {
     success: true,
