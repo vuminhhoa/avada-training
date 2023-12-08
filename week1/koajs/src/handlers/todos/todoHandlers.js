@@ -86,19 +86,16 @@ export async function updateOneTodo(ctx) {
 export async function save(ctx) {
   try {
     const postData = ctx.request.body;
-    const isHas = getOneTodo(postData.id);
-    if (!isHas) {
-      const todos = getAllTodos();
-      sortDescTodo(todos, "id");
-      const newTodo = {
-        ...postData,
-        id: todos[0]?.id + 1 || 1,
-        isCompleted: false,
-      };
-      addTodo(newTodo);
+    const todos = getAllTodos();
+    sortDescTodo(todos, "id");
+    const newTodo = {
+      ...postData,
+      id: todos[0]?.id + 1 || 1,
+      isCompleted: false,
+    };
+    addTodo(newTodo);
 
-      return successHandler(ctx, newTodo, 201);
-    }
+    return successHandler(ctx, newTodo, 201);
 
     return errorHandler(ctx, "Todo Found with that id!");
   } catch (e) {

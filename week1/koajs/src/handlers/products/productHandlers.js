@@ -6,30 +6,14 @@ import {
   update as updateProduct,
 } from "../../database/productRepository";
 import {
-  getFields as getFieldsProduct,
-  getLimits as getLimitsProduct,
-  sortAscByField as sortAscProduct,
-  sortDescByField as sortDescProduct,
-} from "../../utils/repositoryUtils";
-import { successHandler, errorHandler } from "../../utils/responseHandlers";
+  successHandler,
+  errorHandler,
+} from "../../helpers/utils/responseHandlers";
 
 export async function getProducts(ctx) {
   try {
     const { limits, sort } = ctx.query;
-    let products = getAllProducts();
-
-    if (sort) {
-      if (sort === "asc") {
-        sortAscProduct(products, "createdAt");
-      }
-      if (sort === "desc") {
-        sortDescProduct(products, "createdAt");
-      }
-    }
-
-    if (limits) {
-      products = getLimitsProduct(products, limits);
-    }
+    let products = getAllProducts(limits, sort);
     return successHandler(ctx, products, 200);
   } catch (e) {
     return errorHandler(ctx, e);
@@ -40,12 +24,9 @@ export async function getProduct(ctx) {
   try {
     const { id } = ctx.params;
     const { fields } = ctx.query;
-    let currentProduct = getOneProduct(id);
-    if (currentProduct) {
-      if (fields) {
-        currentProduct = getFieldsProduct(currentProduct, fields);
-      }
-      return successHandler(ctx, currentProduct, 200);
+    const product = getOneProduct(id, fields);
+    if (product) {
+      return successHandler(ctx, product, 200);
     }
     return errorHandler(ctx, "Product Not Found with that id!");
   } catch (e) {
@@ -56,8 +37,8 @@ export async function getProduct(ctx) {
 export async function deleteProduct(ctx) {
   try {
     const { id } = ctx.params;
-    const currentProduct = getOneProduct(id);
-    if (currentProduct) {
+    const product = getOneProduct(id);
+    if (product) {
       removeProduct(id);
       return successHandler(ctx, {}, 200);
     }
@@ -70,8 +51,8 @@ export async function updateOneProduct(ctx) {
   try {
     const data = ctx.request.body;
     const { id } = ctx.params;
-    const currentProduct = getOneProduct(id);
-    if (currentProduct) {
+    const product = getOneProduct(id);
+    if (product) {
       updateProduct(id, data);
       return successHandler(ctx, {}, 200);
     }
@@ -85,13 +66,7 @@ export async function updateOneProduct(ctx) {
 export async function save(ctx) {
   try {
     const postData = ctx.request.body;
-    const isHas = getOneProduct(postData.id);
-    if (isHas) {
-      return errorHandler(ctx, "Product Found with that id!");
-    } else {
-      const currentDate = new Date();
-      addProduct({ ...postData, createdAt: currentDate.toISOString() });
-    }
+    addProduct(postData);
 
     return successHandler(ctx, {}, 200);
   } catch (e) {

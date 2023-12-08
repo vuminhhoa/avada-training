@@ -1,4 +1,7 @@
-import { writeDatabase, getIndexFromId } from "../utils/repositoryUtils";
+import {
+  writeDatabase,
+  getIndexFromId,
+} from "../helpers/utils/repositoryUtils";
 const { data: todos } = require("./todos.json");
 const file = "todos.json";
 
