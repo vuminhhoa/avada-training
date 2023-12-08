@@ -27,17 +27,21 @@ export function getOne(id, fields) {
 }
 
 export function remove(id) {
-  products = products.filter((item) => item.id !== id);
-  return writeDatabase(products, file);
+  let allProducts = products;
+  allProducts = allProducts.filter((item) => item.id.toString() !== id);
+  return writeDatabase(allProducts, file);
 }
 
 export function update(id, newData) {
-  products = products.map((item) => {
-    if (item.id === id) {
-      return { ...item, newData };
+  let allProducts = products;
+
+  allProducts = allProducts.map((item) => {
+    if (item.id.toString() === id) {
+      return { ...item, ...newData };
     }
-    return writeDatabase(products, file);
+    return item;
   });
+  return writeDatabase(allProducts, file);
 }
 
 export function add(data) {
