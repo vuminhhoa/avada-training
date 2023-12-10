@@ -3,7 +3,7 @@ import fs from "fs";
 export function writeDatabase(data, file) {
   return fs.writeFileSync(
     `./src/database/${file}`,
-    JSON.stringify({ data: data })
+    JSON.stringify({ data: data }, null, 2)
   );
 }
 

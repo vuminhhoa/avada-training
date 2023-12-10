@@ -1,9 +1,9 @@
 import {
-  getAll as getAllProducts,
-  getOne as getOneProduct,
-  add as addProduct,
-  remove as removeProduct,
-  update as updateProduct,
+  getAll,
+  getOne,
+  add,
+  remove,
+  update,
 } from "../../database/productRepository";
 import {
   successHandler,
@@ -13,7 +13,7 @@ import {
 export async function getProducts(ctx) {
   try {
     const { limits, sort } = ctx.query;
-    const products = getAllProducts(limits, sort);
+    const products = getAll(limits, sort);
     return successHandler(ctx, products);
   } catch (e) {
     return errorHandler(ctx, e);
@@ -24,7 +24,7 @@ export async function getProduct(ctx) {
   try {
     const { id } = ctx.params;
     const { fields } = ctx.query;
-    const product = getOneProduct(id, fields);
+    const product = getOne(id, fields);
     if (product) {
       return successHandler(ctx, product);
     }
@@ -37,9 +37,9 @@ export async function getProduct(ctx) {
 export async function deleteProduct(ctx) {
   try {
     const { id } = ctx.params;
-    const product = getOneProduct(id);
+    const product = getOne(id);
     if (product) {
-      removeProduct(id);
+      remove(id);
       return successHandler(ctx, {});
     }
     return errorHandler(ctx, "Product Not Found with that id!");
@@ -47,28 +47,28 @@ export async function deleteProduct(ctx) {
     return errorHandler(ctx, e);
   }
 }
-export async function updateOneProduct(ctx) {
+
+export async function updateProduct(ctx) {
   try {
     const data = ctx.request.body;
     const { id } = ctx.params;
-    const product = getOneProduct(id);
+    const product = getOne(id);
     if (product) {
-      updateProduct(id, data);
+      update(id, data);
       return successHandler(ctx, {});
     }
-
     return errorHandler(ctx, "Product Not Found with that id!");
   } catch (e) {
     return errorHandler(ctx, e);
   }
 }
 
-export async function save(ctx) {
+export async function createProduct(ctx) {
   try {
     const postData = ctx.request.body;
-    addProduct(postData);
+    const newProduct = add(postData);
 
-    return successHandler(ctx, {});
+    return successHandler(ctx, newProduct, 201);
   } catch (e) {
     return errorHandler(ctx, e);
   }
