@@ -29,7 +29,7 @@ export function remove(id) {
   const newTodos = todos.filter((todo) => todo.id.toString() !== id);
   return writeDatabase(newTodos, file);
 }
-export function massRemove(ids = []) {
+export function bulkRemove(ids = []) {
   const newTodos = todos.filter((todo) => !ids.includes(todo.id));
   return writeDatabase(newTodos, file);
 }
@@ -44,7 +44,7 @@ export function update(id, newData) {
   return writeDatabase(newTodos, file);
 }
 
-export function massUpdate(ids = [], newData) {
+export function bulkUpdate(ids = [], newData) {
   const newTodos = todos.map((todo) => {
     if (ids.includes(todo.id)) {
       return {

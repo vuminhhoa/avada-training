@@ -4,8 +4,8 @@ import {
   add,
   remove,
   update,
-  massRemove,
-  massUpdate,
+  bulkRemove,
+  bulkUpdate,
 } from "../../database/todoRepository";
 import {
   successHandler,
@@ -52,7 +52,7 @@ export async function deleteTodo(ctx) {
 export async function deleteTodos(ctx) {
   try {
     const ids = ctx.request.body;
-    massRemove(ids);
+    bulkRemove(ids);
     return successHandler(ctx, {});
   } catch (e) {
     return errorHandler(ctx, e);
@@ -75,7 +75,7 @@ export async function updateTodo(ctx) {
 export async function updateTodos(ctx) {
   try {
     const { ids, data } = ctx.request.body;
-    massUpdate(ids, data);
+    bulkUpdate(ids, data);
     return successHandler(ctx, {});
   } catch (e) {
     return errorHandler(ctx, e);
