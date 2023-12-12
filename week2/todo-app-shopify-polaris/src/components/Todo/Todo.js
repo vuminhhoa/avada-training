@@ -26,10 +26,8 @@ function Todo() {
   } = useFetchApi(`${URL}/todos`);
 
   const [selectedItems, setSelectedItems] = useState([]);
-  const [loadingComplete, setLoadingComplete] = useState(false);
-  const [loadingDelete, setLoadingDelete] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [loadingCreate, setLoadingCreate] = useState(false);
-  const [loadingBulkAction, setLoadingBulkAction] = useState(false);
   const [active, setActive] = useState(false);
   const toggleModal = useCallback(() => setActive((active) => !active), []);
 
@@ -62,7 +60,7 @@ function Todo() {
 
   const handleCompleteTodo = async (todo, idTodo) => {
     try {
-      setLoadingComplete(true);
+      setLoading(true);
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       const resp = await fetch(`${URL}/todos/${idTodo}`, {
@@ -92,13 +90,13 @@ function Todo() {
     } catch (e) {
       console.error(e);
     } finally {
-      setLoadingComplete(false);
+      setLoading(false);
     }
   };
 
   const handleDeleteTodo = async (idTodo) => {
     try {
-      setLoadingDelete(true);
+      setLoading(true);
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       const resp = await fetch(`${URL}/todos/${idTodo}`, {
@@ -112,13 +110,13 @@ function Todo() {
     } catch (e) {
       console.error(e);
     } finally {
-      setLoadingDelete(false);
+      setLoading(false);
     }
   };
 
   const handleBulkComplete = async () => {
     try {
-      setLoadingBulkAction(true);
+      setLoading(true);
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       const resp = await fetch(`${URL}/todos`, {
@@ -148,13 +146,13 @@ function Todo() {
     } catch (error) {
       console.error(error);
     } finally {
-      setLoadingBulkAction(false);
+      setLoading(false);
     }
   };
 
   const handleBulkDelete = async () => {
     try {
-      setLoadingBulkAction(true);
+      setLoading(true);
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       const resp = await fetch(`${URL}/todos`, {
@@ -172,7 +170,7 @@ function Todo() {
     } catch (error) {
       console.error(error);
     } finally {
-      setLoadingBulkAction(false);
+      setLoading(false);
     }
   };
 
@@ -249,7 +247,7 @@ function Todo() {
           onSelectionChange={handleSelected}
           promotedBulkActions={promotedBulkActions}
           bulkActions={bulkActions}
-          loading={loadingFetch ? loadingFetch : loadingBulkAction}
+          loading={loadingFetch ? loadingFetch : loading}
           emptyState={
             <EmptyState
               heading="Relax..."
@@ -275,16 +273,12 @@ function Todo() {
                     <Badge tone="attention">Pending</Badge>
                   )}
                   <ButtonGroup>
-                    <Button
-                      onClick={() => handleCompleteTodo(item, item.id)}
-                      loading={loadingComplete}
-                    >
+                    <Button onClick={() => handleCompleteTodo(item, item.id)}>
                       Complete
                     </Button>
                     <Button
                       variant="primary"
                       onClick={() => handleDeleteTodo(item.id)}
-                      loading={loadingDelete}
                     >
                       Delete
                     </Button>
