@@ -49,7 +49,6 @@ export function add(data) {
         ? Math.max(...products.map((item) => item.id)) + 1
         : 1,
     ...data,
-    isCompleted: false,
     createdAt: new Date(),
   };
   const newProducts = [...products, newProduct];
