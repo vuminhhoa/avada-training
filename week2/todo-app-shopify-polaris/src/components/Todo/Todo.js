@@ -1,12 +1,11 @@
 import React, { useState, useCallback } from "react";
 import useFetchApi from "../../hooks/useFetchApi";
 import {
-  LegacyCard,
+  Card,
   Page,
   Button,
   ResourceList,
   ResourceItem,
-  LegacyStack,
   ButtonGroup,
   Text,
   Badge,
@@ -14,20 +13,30 @@ import {
   TextField,
   Modal,
   Form,
+  InlineStack,
+  EmptyState,
 } from "@shopify/polaris";
 
 function Todo() {
   const URL = "http://localhost:5000/api";
-  const { data: todos, setData: setTodos } = useFetchApi(`${URL}/todos`);
+  const {
+    data: todos,
+    setData: setTodos,
+    loading: loadingFetch,
+  } = useFetchApi(`${URL}/todos`);
 
   const [selectedItems, setSelectedItems] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loadingComplete, setLoadingComplete] = useState(false);
+  const [loadingDelete, setLoadingDelete] = useState(false);
+  const [loadingCreate, setLoadingCreate] = useState(false);
+  const [loadingBulkAction, setLoadingBulkAction] = useState(false);
   const [active, setActive] = useState(false);
   const toggleModal = useCallback(() => setActive((active) => !active), []);
 
   const handleCreateTodo = async (value) => {
     try {
-      setLoading(true);
+      setLoadingCreate(true);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       const res = await fetch(`${URL}/todos`, {
         method: "POST",
         headers: {
@@ -45,7 +54,7 @@ function Todo() {
     } catch (e) {
       console.error(e);
     } finally {
-      setLoading(false);
+      setLoadingCreate(false);
       setActive(false);
       setValue("");
     }
@@ -53,7 +62,9 @@ function Todo() {
 
   const handleCompleteTodo = async (todo, idTodo) => {
     try {
-      setLoading(true);
+      setLoadingComplete(true);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       const resp = await fetch(`${URL}/todos/${idTodo}`, {
         method: "PUT",
         headers: {
@@ -78,18 +89,18 @@ function Todo() {
         });
         setTodos(newTodo);
       }
-      throw new Error(`Failed to complete todo with ID ${idTodo}`);
     } catch (e) {
       console.error(e);
     } finally {
-      setLoading(false);
+      setLoadingComplete(false);
     }
   };
 
   const handleDeleteTodo = async (idTodo) => {
     try {
-      console.log(`Deleting ${idTodo}`);
-      setLoading(true);
+      setLoadingDelete(true);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       const resp = await fetch(`${URL}/todos/${idTodo}`, {
         method: "DELETE",
       });
@@ -98,17 +109,18 @@ function Todo() {
         const newTodo = todos.filter((todo) => todo.id !== parseInt(idTodo));
         setTodos(newTodo);
       }
-      throw new Error(`Failed to complete todo with ID ${idTodo}`);
     } catch (e) {
       console.error(e);
     } finally {
-      setLoading(false);
+      setLoadingDelete(false);
     }
   };
 
-  const completeBulk = async () => {
+  const handleBulkComplete = async () => {
     try {
-      setLoading(true);
+      setLoadingBulkAction(true);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       const resp = await fetch(`${URL}/todos`, {
         method: "PUT",
         headers: {
@@ -133,17 +145,18 @@ function Todo() {
         setTodos(newTodos);
         setSelectedItems([]);
       }
-      throw new Error(`Failed to complete bulk todo`);
     } catch (error) {
       console.error(error);
     } finally {
-      setLoading(false);
+      setLoadingBulkAction(false);
     }
   };
 
-  const deleteBulk = async () => {
+  const handleBulkDelete = async () => {
     try {
-      setLoading(true);
+      setLoadingBulkAction(true);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       const resp = await fetch(`${URL}/todos`, {
         method: "DELETE",
         body: selectedItems,
@@ -156,22 +169,21 @@ function Todo() {
         setTodos(newTodos);
         setSelectedItems([]);
       }
-      throw new Error(`Failed to complete todo`);
     } catch (error) {
       console.error(error);
     } finally {
-      setLoading(false);
+      setLoadingBulkAction(false);
     }
   };
 
   const promotedBulkActions = [
     {
       content: "Complete",
-      onAction: completeBulk,
+      onAction: handleBulkComplete,
     },
     {
       content: "Delete",
-      onAction: deleteBulk,
+      onAction: handleBulkDelete,
     },
   ];
 
@@ -205,6 +217,7 @@ function Todo() {
           onAction: () => {
             handleCreateTodo(value);
           },
+          loading: loadingCreate,
         }}
       >
         <Modal.Section>
@@ -228,7 +241,7 @@ function Todo() {
         </Modal.Section>
       </Modal>
 
-      <LegacyCard>
+      <Card padding="0">
         <ResourceList
           resourceName={resourceName}
           items={todos}
@@ -236,44 +249,52 @@ function Todo() {
           onSelectionChange={handleSelected}
           promotedBulkActions={promotedBulkActions}
           bulkActions={bulkActions}
+          loading={loadingFetch ? loadingFetch : loadingBulkAction}
+          emptyState={
+            <EmptyState
+              heading="Relax..."
+              image="https://cdn.shopify.com/s/files/1/0262/4071/2726/files/emptystate-files.png"
+            >
+              <p>You have no to do! </p>
+            </EmptyState>
+          }
           renderItem={(item) => (
             <ResourceItem
               id={item.id}
               text={item.text}
               isCompleted={item.isCompleted}
-              loading={loading}
             >
-              <LegacyStack alignment="center">
-                <LegacyStack.Item fill>
-                  <Text as="h2" variant="bodyMd">
-                    {item.text}
-                  </Text>
-                </LegacyStack.Item>
-                <LegacyStack.Item>
+              <InlineStack blockAlign="center" align="space-between">
+                <Text as="h2" variant="bodyMd">
+                  {item.text}
+                </Text>
+                <InlineStack gap="400">
                   {item.isCompleted ? (
                     <Badge tone="success">Done</Badge>
                   ) : (
                     <Badge tone="attention">Pending</Badge>
                   )}
-                </LegacyStack.Item>
-                <LegacyStack.Item>
                   <ButtonGroup>
-                    <Button onClick={() => handleCompleteTodo(item, item.id)}>
+                    <Button
+                      onClick={() => handleCompleteTodo(item, item.id)}
+                      loading={loadingComplete}
+                    >
                       Complete
                     </Button>
                     <Button
                       variant="primary"
                       onClick={() => handleDeleteTodo(item.id)}
+                      loading={loadingDelete}
                     >
                       Delete
                     </Button>
                   </ButtonGroup>
-                </LegacyStack.Item>
-              </LegacyStack>
+                </InlineStack>
+              </InlineStack>
             </ResourceItem>
           )}
         />
-      </LegacyCard>
+      </Card>
     </Page>
   );
 }
