@@ -21,6 +21,4 @@ const AppLayout = () => {
   );
 };
 
-AppLayout.propTypes = {};
-
 export default AppLayout;

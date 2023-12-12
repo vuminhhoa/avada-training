@@ -1,8 +1,20 @@
 import React, { useState, useCallback } from "react";
 import useFetchApi from "../../hooks/useFetchApi";
-import { LegacyCard, Page, Button, ResourceList } from "@shopify/polaris";
-import TodoItem from "./TodoItem";
-import TodoModal from "./TodoModal";
+import {
+  LegacyCard,
+  Page,
+  Button,
+  ResourceList,
+  ResourceItem,
+  LegacyStack,
+  ButtonGroup,
+  Text,
+  Badge,
+  FormLayout,
+  TextField,
+  Modal,
+  Form,
+} from "@shopify/polaris";
 
 function Todo() {
   const URL = "http://localhost:5000/api";
@@ -13,13 +25,7 @@ function Todo() {
   const [active, setActive] = useState(false);
   const toggleModal = useCallback(() => setActive((active) => !active), []);
 
-  const activator = (
-    <Button variant="primary" onClick={toggleModal}>
-      Create todo
-    </Button>
-  );
-
-  const addTodo = async (text) => {
+  const handleCreateTodo = async (value) => {
     try {
       setLoading(true);
       const res = await fetch(`${URL}/todos`, {
@@ -28,7 +34,7 @@ function Todo() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          text: text,
+          text: value,
         }),
       });
       const resp = await res.json();
@@ -40,10 +46,12 @@ function Todo() {
       console.error(e);
     } finally {
       setLoading(false);
+      setActive(false);
+      setValue("");
     }
   };
 
-  const completeTodo = async (todo, idTodo) => {
+  const handleCompleteTodo = async (todo, idTodo) => {
     try {
       setLoading(true);
       const resp = await fetch(`${URL}/todos/${idTodo}`, {
@@ -78,8 +86,9 @@ function Todo() {
     }
   };
 
-  const removeTodo = async (idTodo) => {
+  const handleDeleteTodo = async (idTodo) => {
     try {
+      console.log(`Deleting ${idTodo}`);
       setLoading(true);
       const resp = await fetch(`${URL}/todos/${idTodo}`, {
         method: "DELETE",
@@ -178,41 +187,94 @@ function Todo() {
     setSelectedItems(selected);
   };
 
-  const handleCreateTodo = () => {
-    addTodo(value);
-    setActive(false);
-    setValue("");
-  };
   return (
-    <div>
-      <TodoModal
-        active={active}
-        toggleModal={toggleModal}
-        handleChange={handleChange}
-        handleCreateTodo={handleCreateTodo}
-        value={value}
-      />
-      <Page title="Todoes" primaryAction={activator}>
-        <LegacyCard>
-          <ResourceList
-            resourceName={resourceName}
-            items={todos}
-            renderItem={(item) => (
-              <TodoItem
-                item={item}
-                loading={loading}
-                completeTodo={completeTodo}
-                removeTodo={removeTodo}
+    <Page
+      title="Todoes"
+      primaryAction={
+        <Button variant="primary" onClick={toggleModal}>
+          Create todo
+        </Button>
+      }
+    >
+      <Modal
+        open={active}
+        onClose={toggleModal}
+        title="Create todo"
+        primaryAction={{
+          content: "Create",
+          onAction: () => {
+            handleCreateTodo(value);
+          },
+        }}
+      >
+        <Modal.Section>
+          <Form
+            noValidate
+            onSubmit={() => {
+              handleCreateTodo(value);
+            }}
+          >
+            <FormLayout>
+              <TextField
+                value={value}
+                onChange={handleChange}
+                label="Todo"
+                type="text"
+                autoComplete="off"
+                placeholder="Type todo..."
               />
-            )}
-            selectedItems={selectedItems}
-            onSelectionChange={handleSelected}
-            promotedBulkActions={promotedBulkActions}
-            bulkActions={bulkActions}
-          />
-        </LegacyCard>
-      </Page>
-    </div>
+            </FormLayout>
+          </Form>
+        </Modal.Section>
+      </Modal>
+
+      <LegacyCard>
+        <ResourceList
+          resourceName={resourceName}
+          items={todos}
+          selectedItems={selectedItems}
+          onSelectionChange={handleSelected}
+          promotedBulkActions={promotedBulkActions}
+          bulkActions={bulkActions}
+          renderItem={(item) => (
+            <ResourceItem
+              id={item.id}
+              text={item.text}
+              isCompleted={item.isCompleted}
+              loading={loading}
+            >
+              <LegacyStack alignment="center">
+                <LegacyStack.Item fill>
+                  <Text as="h2" variant="bodyMd">
+                    {item.text}
+                  </Text>
+                </LegacyStack.Item>
+                <LegacyStack.Item>
+                  {item.isCompleted ? (
+                    <Badge tone="success">Done</Badge>
+                  ) : (
+                    <Badge tone="attention">Pending</Badge>
+                  )}
+                </LegacyStack.Item>
+                <LegacyStack.Item>
+                  <ButtonGroup>
+                    <Button onClick={() => handleCompleteTodo(item, item.id)}>
+                      Complete
+                    </Button>
+                    <Button
+                      variant="primary"
+                      onClick={() => handleDeleteTodo(item.id)}
+                    >
+                      Delete
+                    </Button>
+                  </ButtonGroup>
+                </LegacyStack.Item>
+              </LegacyStack>
+            </ResourceItem>
+          )}
+        />
+      </LegacyCard>
+    </Page>
   );
 }
 
