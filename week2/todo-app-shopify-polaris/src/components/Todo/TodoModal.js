@@ -1,5 +1,5 @@
 import React from "react";
-import { FormLayout, Modal, TextField, Form, Button } from "@shopify/polaris";
+import { FormLayout, Modal, TextField, Form } from "@shopify/polaris";
 const TodoModal = ({
   active,
   toggleModal,
