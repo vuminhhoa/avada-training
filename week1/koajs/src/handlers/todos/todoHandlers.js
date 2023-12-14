@@ -1,5 +1,5 @@
 import {
-  getAll,
+  list,
   getOne,
   add,
   remove,
@@ -15,7 +15,7 @@ import {
 export async function getTodos(ctx) {
   try {
     const { limits, sort } = ctx.query;
-    const todos = getAll(limits, sort);
+    const todos = list(limits, sort);
     return successHandler(ctx, todos);
   } catch (e) {
     return errorHandler(ctx, e);
@@ -49,6 +49,7 @@ export async function deleteTodo(ctx) {
     return errorHandler(ctx, e);
   }
 }
+
 export async function deleteTodos(ctx) {
   try {
     const ids = ctx.request.body;
@@ -58,6 +59,7 @@ export async function deleteTodos(ctx) {
     return errorHandler(ctx, e);
   }
 }
+
 export async function updateTodo(ctx) {
   try {
     const data = ctx.request.body;
@@ -72,6 +74,7 @@ export async function updateTodo(ctx) {
     return errorHandler(ctx, e);
   }
 }
+
 export async function updateTodos(ctx) {
   try {
     const { ids, data } = ctx.request.body;
@@ -81,6 +84,7 @@ export async function updateTodos(ctx) {
     return errorHandler(ctx, e);
   }
 }
+
 export async function createTodo(ctx) {
   try {
     const postData = ctx.request.body;

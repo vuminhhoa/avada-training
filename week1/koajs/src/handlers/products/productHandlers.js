@@ -1,5 +1,5 @@
 import {
-  getAll,
+  list,
   getOne,
   add,
   remove,
@@ -12,8 +12,8 @@ import {
 
 export async function getProducts(ctx) {
   try {
-    const { limits, sort } = ctx.query;
-    const products = getAll(limits, sort);
+    const { limit, sort } = ctx.query;
+    const products = list(limit, sort);
     return successHandler(ctx, products);
   } catch (e) {
     return errorHandler(ctx, e);

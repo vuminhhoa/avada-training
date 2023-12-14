@@ -6,15 +6,15 @@ import {
 const { data: products } = require("./products.json");
 const file = "products.json";
 
-export function getAll(limits, sort) {
-  let allProducts = [...products];
+export function list({ limit = 10, sort = "desc" } = {}) {
+  let listProducts = [...products];
   if (sort) {
-    allProducts = sortByField(allProducts, "createdAt", sort);
+    listProducts = sortByField(listProducts, "createdAt", sort);
   }
-  if (limits) {
-    allProducts = allProducts.slice(0, parseInt(limits));
+  if (limit) {
+    listProducts = listProducts.slice(0, parseInt(limit));
   }
-  return allProducts;
+  return listProducts;
 }
 
 export function getOne(id, fields) {

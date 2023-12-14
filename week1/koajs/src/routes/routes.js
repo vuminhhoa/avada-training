@@ -36,4 +36,5 @@ router
   .put("/todos", todoHandler.updateTodos)
   .delete("/todos/:id", todoHandler.deleteTodo)
   .delete("/todos", todoHandler.deleteTodos);
+
 export default router;

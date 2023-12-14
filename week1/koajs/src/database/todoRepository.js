@@ -6,13 +6,13 @@ import {
 const { data: todos } = require("./todos.json");
 const file = "todos.json";
 
-export function getAll(limits, sort) {
-  let allTodos = [...todos];
+export function list({ limit = 10, sort = "desc" } = {}) {
+  let allTodos = [...products];
   if (sort) {
     allTodos = sortByField(allTodos, "createdAt", sort);
   }
-  if (limits) {
-    allTodos = allTodos.slice(0, parseInt(limits));
+  if (limit) {
+    allTodos = allTodos.slice(0, parseInt(limit));
   }
   return allTodos;
 }
