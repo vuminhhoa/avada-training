@@ -151,7 +151,10 @@ function Todo() {
 
       const resp = await fetch(`${URL}/todos`, {
         method: "DELETE",
-        body: selectedItems,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(selectedItems),
       });
       const data = await resp.json();
       if (data.success) {
