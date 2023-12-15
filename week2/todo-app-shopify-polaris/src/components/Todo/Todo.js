@@ -45,7 +45,7 @@ function Todo() {
       });
       const resp = await res.json();
       if (resp.success) {
-        const newData = [...todos, { text: value }];
+        const newData = [...todos, { id: resp.data, text: value }];
         setTodos(newData);
       }
     } catch (e) {

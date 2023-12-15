@@ -87,8 +87,8 @@ export async function updateTodos(ctx) {
 
 export async function createTodo(ctx) {
   try {
-    await add(ctx.request.body);
-    return successHandler(ctx, {}, 201);
+    const newId = await add(ctx.request.body);
+    return successHandler(ctx, newId, 201);
   } catch (e) {
     return errorHandler(ctx, e);
   }

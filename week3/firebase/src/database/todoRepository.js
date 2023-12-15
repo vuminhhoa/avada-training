@@ -38,9 +38,10 @@ export async function bulkUpdate(ids = [], newData) {
 }
 
 export async function add(data) {
-  return await todoRef.add({
+  const newTodo = await todoRef.add({
     ...data,
     isCompleted: false,
     createdAt: new Date(),
   });
+  return newTodo.id;
 }
