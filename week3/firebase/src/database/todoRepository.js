@@ -2,6 +2,10 @@ import db from "./config";
 import { pick } from "../helpers/utils/repositoryUtils";
 const todoRef = db.collection("todos");
 
+/**
+ * @param {limit, sort}
+ * @returns {[{id: string, createdAt: {_seconds: number, _nanoseconds: number}, text: string, isCompleted: boolean}, ...]}
+ */
 export async function list({ limit = 10, sort = "asc" } = {}) {
   const todoSnapshot = await todoRef
     .orderBy("createdAt", sort)
@@ -11,6 +15,10 @@ export async function list({ limit = 10, sort = "asc" } = {}) {
   return todoSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
 }
 
+/**
+ * @param {id, fields}
+ * @returns {[{id: string, createdAt: {_seconds: number, _nanoseconds: number}, text: string, isCompleted: boolean, updatedAt?: {_seconds: number, _nanoseconds: number}}, ...]}
+ */
 export async function getOne(id, fields) {
   const todo = await todoRef.doc(id).get();
   if (fields) {
@@ -19,20 +27,32 @@ export async function getOne(id, fields) {
   return todo.data();
 }
 
+/**
+ * @param id
+ */
 export async function remove(id) {
   return todoRef.doc(id).delete();
 }
 
+/**
+ * @param ids
+ */
 export async function bulkRemove(ids = []) {
   const batch = db.batch();
   ids.map((id) => batch.delete(todoRef.doc(id)));
   return batch.commit();
 }
 
+/**
+ * @param ids
+ */
 export async function update(id, newData) {
   return todoRef.doc(id).update({ ...newData, updatedAt: new Date() });
 }
 
+/**
+ * @param {ids, newData}
+ */
 export async function bulkUpdate(ids = [], newData) {
   const batch = db.batch();
   ids.map((id) =>
@@ -41,6 +61,10 @@ export async function bulkUpdate(ids = [], newData) {
   return batch.commit();
 }
 
+/**
+ * @param data
+ * @returns {id}
+ */
 export async function add(data) {
   const newTodo = await todoRef.add({
     ...data,

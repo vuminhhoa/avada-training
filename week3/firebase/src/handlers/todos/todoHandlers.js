@@ -14,8 +14,8 @@ import {
 
 export async function getTodos(ctx) {
   try {
-    const { limits, sort } = ctx.query;
-    const todos = await list({ limits, sort });
+    const { limit, sort } = ctx.query;
+    const todos = await list({ limit, sort });
     return successHandler(ctx, todos);
   } catch (e) {
     return errorHandler(ctx, e);
