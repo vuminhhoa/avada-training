@@ -8,9 +8,7 @@ export async function list({ limit = 10, sort = "asc" } = {}) {
     .limit(limit)
     .get();
 
-  return todoSnapshot.docs.map((doc) => {
-    return { id: doc.id, ...doc.data() };
-  });
+  return todoSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
 }
 
 export async function getOne(id, fields) {
@@ -22,19 +20,25 @@ export async function getOne(id, fields) {
 }
 
 export async function remove(id) {
-  return await todoRef.doc(id).delete();
+  return todoRef.doc(id).delete();
 }
 
 export async function bulkRemove(ids = []) {
-  return await ids.split(",").map(async (id) => await todoRef.doc(id).delete());
+  const batch = db.batch();
+  ids.map((id) => batch.delete(todoRef.doc(id)));
+  return batch.commit();
 }
 
 export async function update(id, newData) {
-  return await todoRef.doc(id).update({ ...newData });
+  return todoRef.doc(id).update({ ...newData, updatedAt: new Date() });
 }
 
 export async function bulkUpdate(ids = [], newData) {
-  return ids.map(async (id) => await todoRef.doc(id).update({ ...newData }));
+  const batch = db.batch();
+  ids.map((id) =>
+    batch.update(todoRef.doc(id), { ...newData, updatedAt: new Date() })
+  );
+  return batch.commit();
 }
 
 export async function add(data) {
