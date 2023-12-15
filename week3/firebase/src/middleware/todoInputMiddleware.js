@@ -1,5 +1,5 @@
-import yup from "yup";
-import { errorHandler } from "../utils/responseHandlers";
+import * as yup from "yup";
+import { errorHandler } from "../helpers/utils/responseHandlers";
 export default async function todoInputMiddleware(ctx, next) {
   try {
     const postData = ctx.request.body;
@@ -8,7 +8,7 @@ export default async function todoInputMiddleware(ctx, next) {
     });
 
     await schema.validate(postData);
-    next();
+    return next();
   } catch (e) {
     return errorHandler(ctx, e);
   }
