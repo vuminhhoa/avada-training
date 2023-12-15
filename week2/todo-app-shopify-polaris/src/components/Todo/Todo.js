@@ -34,7 +34,6 @@ function Todo() {
   const handleCreateTodo = async (value) => {
     try {
       setLoadingCreate(true);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
       const res = await fetch(`${URL}/todos`, {
         method: "POST",
         headers: {
@@ -46,7 +45,7 @@ function Todo() {
       });
       const resp = await res.json();
       if (resp.success) {
-        const newData = [...todos, resp.data];
+        const newData = [...todos, { text: value }];
         setTodos(newData);
       }
     } catch (e) {
@@ -61,7 +60,6 @@ function Todo() {
   const handleCompleteTodo = async (todo, idTodo) => {
     try {
       setLoading(true);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       const resp = await fetch(`${URL}/todos/${idTodo}`, {
         method: "PUT",
@@ -69,7 +67,6 @@ function Todo() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          ...todo,
           isCompleted: true,
         }),
       });
@@ -97,14 +94,13 @@ function Todo() {
   const handleDeleteTodo = async (idTodo) => {
     try {
       setLoading(true);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       const resp = await fetch(`${URL}/todos/${idTodo}`, {
         method: "DELETE",
       });
       const data = await resp.json();
       if (data.success) {
-        const newTodo = todos.filter((todo) => todo.id !== parseInt(idTodo));
+        const newTodo = todos.filter((todo) => todo.id !== idTodo);
         setTodos(newTodo);
       }
     } catch (e) {
@@ -117,7 +113,6 @@ function Todo() {
   const handleBulkComplete = async () => {
     try {
       setLoading(true);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       const resp = await fetch(`${URL}/todos`, {
         method: "PUT",
@@ -153,7 +148,6 @@ function Todo() {
   const handleBulkDelete = async () => {
     try {
       setLoading(true);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       const resp = await fetch(`${URL}/todos`, {
         method: "DELETE",

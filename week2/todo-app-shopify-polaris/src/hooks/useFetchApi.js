@@ -8,7 +8,6 @@ export default function useFetchApi(url) {
   async function fetchData() {
     try {
       setLoading(true);
-      await new Promise((resolve) => setTimeout(resolve, 5000));
 
       const res = await fetch(url);
       const resData = await res.json();
