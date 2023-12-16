@@ -44,7 +44,7 @@ export async function bulkRemove(ids = []) {
 }
 
 /**
- * @param ids
+ * @param id
  */
 export async function update(id, newData) {
   return todoRef.doc(id).update({ ...newData, updatedAt: new Date() });
@@ -63,7 +63,7 @@ export async function bulkUpdate(ids = [], newData) {
 
 /**
  * @param data
- * @returns {id}
+ * @returns {string}
  */
 export async function add(data) {
   const newTodo = await todoRef.add({
