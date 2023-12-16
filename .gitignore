@@ -4,5 +4,4 @@ package-lock.json
 training-code-sample
 public
 *.json
-avada-cli
 koajs-functions
