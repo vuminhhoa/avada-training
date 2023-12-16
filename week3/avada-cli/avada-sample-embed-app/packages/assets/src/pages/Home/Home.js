@@ -13,7 +13,7 @@ export default function Home() {
   const {dispatch} = useStore();
 
   return (
-    <Page title="Dashboard">
+    <Page title="Dashboard ">
       <Layout>
         <Layout.Section>
           <SettingToggle

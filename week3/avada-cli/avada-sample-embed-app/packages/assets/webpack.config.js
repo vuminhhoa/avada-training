@@ -24,7 +24,7 @@ const [sslKey, sslCert] = ['ssl.key', 'ssl.crt'].map(file => {
     return null;
   }
 });
-
+console.log(process.env);
 const isHotReloadEnabled = sslKey && sslCert && !isProduction;
 
 if (!isProduction && process.env.SHOPIFY_API_KEY) {

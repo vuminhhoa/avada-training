@@ -13,7 +13,7 @@ import {collectActiveShopData} from '@assets/services/shopService';
     ? []
     : [
         collectActiveShopData({shop, shopInfo}),
-        {email: shop.email, displayName: shopInfo.shopOwner}
+        {email: shop.email, displayName: shopInfo?.shopOwner}
       ];
   // if (activeShop) {
   //   loadCrisp('WEBSITE_ID', shop.crispSessionToken);
