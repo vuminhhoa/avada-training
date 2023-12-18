@@ -8,7 +8,7 @@ export default function useFetchApi(url) {
   async function fetchData() {
     try {
       setLoading(true);
-      const res = await fetch(url);
+      const res = await fetch(`http://localhost:5000/api/${url}`);
       const resData = await res.json();
       setData(resData.data);
       setFetched(true);
