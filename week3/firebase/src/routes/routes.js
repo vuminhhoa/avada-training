@@ -8,11 +8,13 @@ const router = new Router({
 
 router
   .get("/todos", todoHandler.getTodos)
-  .get("/todos/:id", todoHandler.getTodo)
   .post("/todos", todoInputMiddleware, todoHandler.createTodo)
-  .put("/todos/:id", todoHandler.updateTodo)
   .put("/todos", todoHandler.updateTodos)
-  .delete("/todos/:id", todoHandler.deleteTodo)
   .delete("/todos", todoHandler.deleteTodos);
+
+router
+  .get("/todo/:id", todoHandler.getTodo)
+  .put("/todo/:id", todoHandler.updateTodo)
+  .delete("/todo/:id", todoHandler.deleteTodo);
 
 export default router;
