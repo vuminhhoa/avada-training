@@ -3,6 +3,7 @@
     left: 6.8rem;
     position: absolute;
     z-index: 1;
+    background-color: white;
 
     + * {
       .Avada-Footer_Container {
@@ -12,6 +13,7 @@
   }
 
   &.Avada-Frame__Content--isExpanded {
+    background-color: white;
     .PreLoading-Spinner {
       left: 24rem;
     }
