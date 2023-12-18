@@ -16,14 +16,14 @@ import {
   InlineStack,
   EmptyState,
 } from "@shopify/polaris";
+import fetchApi from "../../helpers/api/fetchApi";
 
 function Todo() {
-  const URL = "http://localhost:5000/api";
   const {
     data: todos,
     setData: setTodos,
     loading: loadingFetch,
-  } = useFetchApi(`${URL}/todos`);
+  } = useFetchApi(`todos`);
 
   const [selectedItems, setSelectedItems] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -34,19 +34,13 @@ function Todo() {
   const handleCreateTodo = async (value) => {
     try {
       setLoadingCreate(true);
-      const res = await fetch(`${URL}/todos`, {
+      const res = await fetchApi({
+        url: "todos",
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          text: value,
-        }),
+        body: { text: value },
       });
-      const resp = await res.json();
-      if (resp.success) {
-        const newData = [...todos, { id: resp.data, text: value }];
-        setTodos(newData);
+      if (res.success) {
+        setTodos([...todos, { id: res.data, text: value }]);
       }
     } catch (e) {
       console.error(e);
@@ -60,29 +54,24 @@ function Todo() {
   const handleCompleteTodo = async (todo, idTodo) => {
     try {
       setLoading(true);
-
-      const resp = await fetch(`${URL}/todos/${idTodo}`, {
+      const res = await fetchApi({
+        url: `todo/${idTodo}`,
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          isCompleted: true,
-        }),
+        body: { isCompleted: todo.isCompleted === true ? false : true },
       });
 
-      const data = await resp.json();
-      if (data.success) {
-        const newTodo = todos.map((todo) => {
-          if (todo.id === idTodo) {
-            return {
-              ...todo,
-              isCompleted: true,
-            };
-          }
-          return todo;
+      if (res.success) {
+        setTodos((prev) => {
+          return prev.map((todo) => {
+            if (todo.id === idTodo) {
+              return {
+                ...todo,
+                isCompleted: todo.isCompleted === true ? false : true,
+              };
+            }
+            return todo;
+          });
         });
-        setTodos(newTodo);
       }
     } catch (e) {
       console.error(e);
@@ -94,14 +83,13 @@ function Todo() {
   const handleDeleteTodo = async (idTodo) => {
     try {
       setLoading(true);
-
-      const resp = await fetch(`${URL}/todos/${idTodo}`, {
+      const res = await fetchApi({
+        url: `todo/${idTodo}`,
         method: "DELETE",
       });
-      const data = await resp.json();
-      if (data.success) {
-        const newTodo = todos.filter((todo) => todo.id !== idTodo);
-        setTodos(newTodo);
+
+      if (res.success) {
+        setTodos((prev) => prev.filter((todo) => todo.id !== idTodo));
       }
     } catch (e) {
       console.error(e);
@@ -113,29 +101,27 @@ function Todo() {
   const handleBulkComplete = async () => {
     try {
       setLoading(true);
-
-      const resp = await fetch(`${URL}/todos`, {
+      const res = await fetchApi({
+        url: `todos`,
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
+        body: {
           ids: selectedItems,
           data: { isCompleted: true },
-        }),
+        },
       });
-      const data = await resp.json();
-      if (data.success) {
-        const newTodos = todos.map((todo) => {
-          if (selectedItems.includes(todo.id)) {
-            return {
-              ...todo,
-              isCompleted: true,
-            };
-          }
-          return todo;
-        });
-        setTodos(newTodos);
+
+      if (res.success) {
+        setTodos((prev) =>
+          prev.map((todo) => {
+            if (selectedItems.includes(todo.id)) {
+              return {
+                ...todo,
+                isCompleted: true,
+              };
+            }
+            return todo;
+          })
+        );
         setSelectedItems([]);
       }
     } catch (error) {
@@ -148,20 +134,16 @@ function Todo() {
   const handleBulkDelete = async () => {
     try {
       setLoading(true);
-
-      const resp = await fetch(`${URL}/todos`, {
+      const res = await fetchApi({
+        url: `todos`,
         method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(selectedItems),
+        body: selectedItems,
       });
-      const data = await resp.json();
-      if (data.success) {
-        const newTodos = todos.filter(
-          (todo) => !selectedItems.includes(todo.id)
+
+      if (res.success) {
+        setTodos((prev) =>
+          prev.filter((todo) => !selectedItems.includes(todo.id))
         );
-        setTodos(newTodos);
         setSelectedItems([]);
       }
     } catch (error) {
@@ -271,7 +253,7 @@ function Todo() {
                   )}
                   <ButtonGroup>
                     <Button onClick={() => handleCompleteTodo(item, item.id)}>
-                      Complete
+                      {item.isCompleted ? "Uncomplete" : "Complete"}
                     </Button>
                     <Button
                       variant="primary"
