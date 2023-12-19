@@ -1,0 +1,30 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+name = "Simple Sales Pop"
+client_id = "654b6a5756be2512ee6c44c33ecab6f9"
+application_url = "https://mario-lit-tiles-lloyd.trycloudflare.com/auth/shopify"
+embedded = true
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+use_legacy_install_flow = true
+
+[auth]
+redirect_urls = [
+  "https://mario-lit-tiles-lloyd.trycloudflare.com/auth/shopify/callback",
+  "https://mario-lit-tiles-lloyd.trycloudflare.com/authSa/shopify/callback",
+  "https://mario-lit-tiles-lloyd.trycloudflare.com/auth/shopify/embed/callback",
+  "https://localhost:3000/auth/shopify/callback",
+  "https://localhost:3000/authSa/shopify/callback",
+  "https://localhost:3000/auth/shopify/embed/callback"
+]
+
+[webhooks]
+api_version = "2023-10"
+
+[pos]
+embedded = false
+
+[build]
+automatically_update_urls_on_dev = true
+dev_store_url = "hoavm.myshopify.com"
