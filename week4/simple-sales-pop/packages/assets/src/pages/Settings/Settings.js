@@ -9,12 +9,15 @@ import {
   Checkbox,
   RangeSlider,
   TextField,
-  Select
+  Select,
+  Button,
+  Spinner
 } from '@shopify/polaris';
 import NotificationPopup from '../../components/NotificationPopup/NotificationPopup';
 import DesktopPositionInput from '../../components/DesktopPositionInput/DesktopPositionInput';
 import defaultSettings from '../../../../functions/src/const/settings/defaultSetting';
 import useFetchApi from '../../hooks/api/useFetchApi';
+import useEditApi from '../../hooks/api/useEditApi';
 /**
  * Render a home page for overview
  *
@@ -22,13 +25,15 @@ import useFetchApi from '../../hooks/api/useFetchApi';
  * @constructor
  */
 export default function Settings() {
-  const {data: settings, handleChangeInput} = useFetchApi({
-    url: '/abc',
+  const {data: settings, handleChangeInput, loading} = useFetchApi({
+    url: '/settings',
     defaultData: defaultSettings
   });
   const [selected, setSelected] = useState(0);
 
   const handleTabChange = useCallback(selectedTabIndex => setSelected(selectedTabIndex), []);
+
+  const {editing, handleEdit} = useEditApi({url: '/settings'});
 
   const selectOptions = [
     {
@@ -205,33 +210,48 @@ export default function Settings() {
   ];
 
   return (
-    <Page title="Settings" fullWidth="true" subtitle="Decide how your notifications will display">
-      <Layout>
-        <Layout.Section oneThird>
-          <NotificationPopup
-            firstName="testststes"
-            city="Mae Jemison"
-            country="Decatur, USA"
-            productName="If your product name is long for one line. It will be truncated to 'Product na...'"
-            timestamp={`${new Date()}`}
-            productImage="https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg"
-            settings={{
-              hideTimeAgo: settings.hideTimeAgo,
-              truncateProductName: settings.truncateProductName
-            }}
-          />
-        </Layout.Section>
-        <Layout.Section>
-          <Card>
-            <Tabs tabs={tabs} selected={selected} onSelect={handleTabChange}>
-              <Card.Section
-                title={tabs[selected].title}
-                children={tabs[selected].body}
-              ></Card.Section>
-            </Tabs>
-          </Card>
-        </Layout.Section>
-      </Layout>
+    <Page
+      title="Settings"
+      fullWidth="true"
+      subtitle="Decide how your notifications will display"
+      primaryAction={
+        <Button size="large" onClick={() => handleEdit(settings, true)} disabled={editing}>
+          SAVE
+        </Button>
+      }
+    >
+      {loading || editing ? (
+        <div className="PreLoading PreLoading-Spinner">
+          <Spinner />
+        </div>
+      ) : (
+        <Layout>
+          <Layout.Section oneThird>
+            <NotificationPopup
+              firstName="testststes"
+              city="Mae Jemison"
+              country="Decatur, USA"
+              productName="If your product name is long for one line. It will be truncated to 'Product na...'"
+              timestamp={`${new Date()}`}
+              productImage="https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg"
+              settings={{
+                hideTimeAgo: settings.hideTimeAgo,
+                truncateProductName: settings.truncateProductName
+              }}
+            />
+          </Layout.Section>
+          <Layout.Section>
+            <Card>
+              <Tabs tabs={tabs} selected={selected} onSelect={handleTabChange}>
+                <Card.Section
+                  title={tabs[selected].title}
+                  children={tabs[selected].body}
+                ></Card.Section>
+              </Tabs>
+            </Card>
+          </Layout.Section>
+        </Layout>
+      )}
     </Page>
   );
 }
