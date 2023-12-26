@@ -49,3 +49,15 @@ export async function updateSettingById(shopId, data) {
     return null;
   }
 }
+
+/**
+ * @param {shopId: string, data: object}
+ */
+export async function addSettings(shopId, data) {
+  try {
+    return collection.add({shopId: shopId, ...data});
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
+}
