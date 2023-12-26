@@ -18,6 +18,7 @@ import DesktopPositionInput from '../../components/DesktopPositionInput/DesktopP
 import defaultSettings from '../../../../functions/src/const/settings/defaultSetting';
 import useFetchApi from '../../hooks/api/useFetchApi';
 import useEditApi from '../../hooks/api/useEditApi';
+
 /**
  * Render a home page for overview
  *
@@ -30,9 +31,7 @@ export default function Settings() {
     defaultData: defaultSettings
   });
   const [selected, setSelected] = useState(0);
-
   const handleTabChange = useCallback(selectedTabIndex => setSelected(selectedTabIndex), []);
-
   const {editing, handleEdit} = useEditApi({url: '/settings'});
 
   const selectOptions = [
