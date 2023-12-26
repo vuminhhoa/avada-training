@@ -2,7 +2,7 @@
 
 name = "Avada First App"
 client_id = "257726e750200c62a95b480d99b5c39e"
-application_url = "https://oe-departure-photograph-exact.trycloudflare.com/auth/shopify"
+application_url = "https://obituaries-liable-incident-valuation.trycloudflare.com/auth/shopify"
 embedded = true
 
 [access_scopes]
@@ -11,9 +11,9 @@ use_legacy_install_flow = true
 
 [auth]
 redirect_urls = [
-  "https://oe-departure-photograph-exact.trycloudflare.com/auth/shopify/callback",
-  "https://oe-departure-photograph-exact.trycloudflare.com/authSa/shopify/callback",
-  "https://oe-departure-photograph-exact.trycloudflare.com/auth/shopify/embed/callback",
+  "https://obituaries-liable-incident-valuation.trycloudflare.com/auth/shopify/callback",
+  "https://obituaries-liable-incident-valuation.trycloudflare.com/authSa/shopify/callback",
+  "https://obituaries-liable-incident-valuation.trycloudflare.com/auth/shopify/embed/callback",
   "https://localhost:3000/auth/shopify/callback",
   "https://localhost:3000/authSa/shopify/callback",
   "https://localhost:3000/auth/shopify/embed/callback"
