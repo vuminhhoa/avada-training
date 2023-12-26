@@ -7,10 +7,14 @@ const todoRef = db.collection("todos");
  * @returns {[{id: string, createdAt: {_seconds: number, _nanoseconds: number}, text: string, isCompleted: boolean}, ...]}
  */
 export async function list({ limit = 10, sort = "asc" } = {}) {
-  const todoSnapshot = await todoRef
-    .orderBy("createdAt", sort)
-    .limit(limit)
-    .get();
+  let query = todoRef;
+  if (sort) {
+    query = query.orderBy("createdAt", sort);
+  }
+  if (limit) {
+    query = query.limit(limit);
+  }
+  const todoSnapshot = await query.get();
 
   return todoSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
 }
@@ -20,11 +24,12 @@ export async function list({ limit = 10, sort = "asc" } = {}) {
  * @returns {[{id: string, createdAt: {_seconds: number, _nanoseconds: number}, text: string, isCompleted: boolean, updatedAt?: {_seconds: number, _nanoseconds: number}}, ...]}
  */
 export async function getOne(id, fields) {
-  const todo = await todoRef.doc(id).get();
+  let query = todoRef.doc(id);
   if (fields) {
-    return pick(todo.data(), fields);
+    query = query.select(fields);
   }
-  return todo.data();
+  const todoSnapshot = await query.get();
+  return { id: todoSnapshot.id, ...todoSnapshot.data() };
 }
 
 /**
