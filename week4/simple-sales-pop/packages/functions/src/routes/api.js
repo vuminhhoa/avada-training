@@ -3,6 +3,7 @@ import * as sampleController from '@functions/controllers/sampleController';
 import * as settingsController from '@functions/controllers/settingsController';
 import * as shopController from '@functions/controllers/shopController';
 import * as subscriptionController from '@functions/controllers/subscriptionController';
+import * as notificationsController from '@functions/controllers/notificationsController';
 import * as appNewsController from '@functions/controllers/appNewsController';
 import {getApiPrefix} from '@functions/const/app';
 
@@ -12,6 +13,10 @@ export default function apiRouter(isEmbed = false) {
   router.get('/samples', sampleController.exampleAction);
 
   router.get('/settings', settingsController.get).put('/settings', settingsController.update);
+
+  router
+    .get('/notifications', notificationsController.listNotifications)
+    .delete('/notifications', notificationsController.removeNotifications);
 
   router.get('/shops', shopController.getUserShops);
   router.get('/subscription', subscriptionController.getSubscription);
