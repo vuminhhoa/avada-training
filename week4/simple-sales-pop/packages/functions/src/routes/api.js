@@ -12,11 +12,13 @@ export default function apiRouter(isEmbed = false) {
 
   router.get('/samples', sampleController.exampleAction);
 
-  router.get('/settings', settingsController.get).put('/settings', settingsController.update);
+  router
+    .get('/settings', settingsController.getSetting)
+    .put('/settings', settingsController.updateSetting);
 
   router
     .get('/notifications', notificationsController.listNotifications)
-    .delete('/notifications', notificationsController.removeNotifications);
+    .delete('/notifications', notificationsController.deleteNotifications);
 
   router.get('/shops', shopController.getUserShops);
   router.get('/subscription', subscriptionController.getSubscription);

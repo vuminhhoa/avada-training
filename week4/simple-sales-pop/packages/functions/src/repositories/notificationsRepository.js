@@ -13,7 +13,7 @@ const collection = firestore.collection('notifications');
 /**
  * @param {shopId: string, data: object}
  */
-export async function addNotification({data, shopId, shopifyDomain}) {
+export async function add({data, shopId, shopifyDomain}) {
   try {
     return collection.add({shopId: shopId, shopifyDomain: shopifyDomain, ...data});
   } catch (e) {

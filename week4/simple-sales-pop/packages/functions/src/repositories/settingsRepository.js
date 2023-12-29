@@ -14,7 +14,7 @@ const collection = firestore.collection('settings');
  * @param {string} id
  * @returns {Object}
  */
-export async function getSettingById(shopId) {
+export async function getOne(shopId) {
   try {
     const setting = await collection
       .where('shopId', '==', shopId)
@@ -34,7 +34,7 @@ export async function getSettingById(shopId) {
 /**
  * @param {id: string, data: Object}
  */
-export async function updateSettingById(shopId, data) {
+export async function updateOne(shopId, data) {
   try {
     const setting = await collection
       .where('shopId', '==', shopId)
@@ -53,7 +53,7 @@ export async function updateSettingById(shopId, data) {
 /**
  * @param {shopId: string, data: object}
  */
-export async function addSettings(shopId, data) {
+export async function add(shopId, data) {
   try {
     return collection.add({shopId: shopId, ...data});
   } catch (e) {

@@ -8,28 +8,53 @@ export async function syncNotifications({shopifyDomain, shopId, accessToken}) {
     shopName: shopifyDomain
   });
 
-  const orders = await shopify.order.list({
-    status: 'any',
-    limit: '30',
-    fields: 'line_items,billing_address,created_at,customer'
-  });
-
+  const query = `{
+    orders(first: 30) {
+      edges {
+        node {
+          id
+          name
+          customer {
+            firstName
+            defaultAddress {
+              city
+              country
+            }
+          }
+          createdAt
+          lineItems(first: 1) {
+            edges {
+              node {
+                id
+                image {
+                  url
+                }
+                product {
+                  id
+                  title
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  `;
+  const data = await shopify.graphql(query);
   return await Promise.all([
-    orders.map(async order => {
-      const productId = order?.line_items[0]?.product_id;
-      const detailProduct = await shopify.product.get(productId);
-      const productImage = detailProduct.image?.src;
+    data.orders.edges.map(async order => {
       const data = {
-        firstName: order.customer?.first_name || null,
-        city: order.billing_address?.city || null,
-        productName: order.line_items[0]?.name,
-        country: order.billing_address?.country || null,
-        productId: productId,
-        timestamp: order?.created_at,
-        productImage: productImage
+        timestamp: order.node.createdAt,
+        firstName: order.node.customer?.firstName || null,
+        city: order.node.customer.defaultAddress.city || null,
+        country: order.node.customer.defaultAddress.country || null,
+        productName: order.node.lineItems?.edges[0]?.node.product.title,
+        productId: order.node.lineItems?.edges[0]?.node.product.id,
+        productImage: order.node.lineItems.edges[0]?.node.image.url
       };
-
-      return await add(data, shopId);
+      return await add({data: data, shopId: shopId, shopifyDomain: shopifyDomain});
     })
   ]);
 }
@@ -41,9 +66,9 @@ export async function getNotificationItem(shopify, orderData) {
   const productImage = detailProduct.image?.src;
   const data = {
     firstName: order.customer?.first_name || null,
-    city: order.billing_address?.city || null,
+    city: order.customer.default_address?.city || null,
     productName: order.line_items[0]?.name,
-    country: order.billing_address?.country || null,
+    country: order.customer.default_address?.country || null,
     productId: productId,
     timestamp: order?.created_at,
     productImage: productImage
@@ -59,9 +84,8 @@ export async function listNotifications(ctx) {
   ctx.body = {data: notifications, success: true};
 }
 
-export async function removeNotifications(ctx) {
+export async function deleteNotifications(ctx) {
   const ids = ctx.req.body.data;
-  console.log(ids);
   await remove(ids);
 
   return (ctx.body = {
