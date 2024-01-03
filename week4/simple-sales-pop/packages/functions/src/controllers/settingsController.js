@@ -1,20 +1,15 @@
-import {getOne, updateOne} from '@functions/repositories/settingsRepository';
 import {getCurrentShop} from '../helpers/auth';
-import {add} from '../repositories/settingsRepository';
+import * as settingsRepo from '../repositories/settingsRepository';
 
 export async function getSetting(ctx) {
   const shopID = getCurrentShop(ctx);
-  const setting = await getOne(shopID);
+  const setting = await settingsRepo.getOne(shopID);
   ctx.body = {data: setting, success: true};
 }
 
 export async function updateSetting(ctx) {
   const data = ctx.req.body.data;
   const shopID = getCurrentShop(ctx);
-  await updateOne(shopID, data);
+  await settingsRepo.updateOne(shopID, data);
   ctx.body = {data: {}, success: true};
-}
-
-export async function addSettings(shopId, data) {
-  return await add(shopId, data);
 }

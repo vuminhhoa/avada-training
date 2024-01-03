@@ -1,13 +1,12 @@
-import Shopify from 'shopify-api-node';
-
-export async function registerWebhook({shopifyDomain, accessToken}) {
-  const shopify = new Shopify({
-    accessToken: accessToken,
-    shopName: shopifyDomain
-  });
-  return shopify.webhook.create({
+export async function registerWebhook(shopify) {
+  const data = {
     topic: 'orders/create',
-    address: 'https://e8e1-171-224-177-204.ngrok-free.app/webhook/order/new',
+    address: 'https://b60d-171-224-179-158.ngrok-free.app/webhook/order/new',
     format: 'json'
-  });
+  };
+  const webhooks = await shopify.webhook.list();
+  const webhook = webhooks.filter(item => item.address === data.address);
+  if (!webhook) {
+    return shopify.webhook.create(data);
+  }
 }

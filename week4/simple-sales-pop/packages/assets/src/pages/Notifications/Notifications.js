@@ -6,167 +6,136 @@ import {
   ResourceItem,
   Stack,
   Pagination,
-  Spinner
+  Spinner,
+  TextStyle,
+  SkeletonPage,
+  Card,
+  EmptyState
 } from '@shopify/polaris';
 import NotificationPopup from '../../components/NotificationPopup/NotificationPopup';
 import moment from 'moment';
 import useFetchApi from '../../hooks/api/useFetchApi';
 import useDeleteApi from '../../hooks/api/useDeleteApi';
+import defaultNotifications from '@avada/functions/src/const/notifications/defaultNotifications';
 
 /**
- * Render a home page for overview
+ * Render a notification page
  *
  * @return {React.ReactElement}
  * @constructor
  */
-
-const items = [
-  {
-    id: '100',
-    firstName: '#',
-    city: 'Mae Jemison',
-    productName: 'Decatur, USA',
-    country: 'Decatur, USA',
-    productId: 'Decatur, USA',
-    timestamp: `Wed Dec 20 2023 11:47:26 GMT+0700 (Giờ Đông Dương)`,
-    productImage:
-      'https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg'
-  },
-  {
-    id: '101',
-    firstName: 'asfdfsdfasdf2',
-    city: 'Mae Jemison',
-    productName: 'Decatur, USA',
-    country: 'Decatur, USA',
-    productId: 'Decatur, USA',
-    timestamp: `Tue Dec 19 2023 15:47:26 GMT+0700 (Giờ Đông Dương)`,
-    productImage:
-      'https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg'
-  },
-  {
-    id: '102',
-    firstName: 'testststes',
-    city: 'Mae Jemison',
-    productName: 'Decatur, USA',
-    country: 'Decatur, USA',
-    productId: 'Decatur, USA',
-    timestamp: `${new Date()}`,
-    productImage:
-      'https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg'
-  }
-];
-
 export default function Notifications() {
-  const {data: notifications, setData: setNotifications, loading} = useFetchApi({
+  const {
+    data: notifications,
+    setData: setNotifications,
+    loading,
+    fetchApi: fetchNoti
+  } = useFetchApi({
     url: '/notifications',
-    defaultData: items
+    defaultData: defaultNotifications
   });
   const {deleting, handleDelete} = useDeleteApi({url: '/notifications'});
-  const [sortValue, setSortValue] = useState('DATE_MODIFIED_DESC');
+  const [sortValue, setSortValue] = useState('timestamp:desc');
   const [selectedItems, setSelectedItems] = useState([]);
 
-  const handleSelected = sort => {
-    setSelectedItems(sort);
-  };
-  const handleSort = sort => {
-    const field = 'timestamp';
-    if (sort == 'DATE_MODIFIED_DESC') {
-      setNotifications(prev => {
-        return prev.sort((a, b) => {
-          if (!isNaN(Date.parse(b[field])) && !isNaN(Date.parse(a[field]))) {
-            return Date.parse(b[field]) - Date.parse(a[field]);
-          }
-          return b[field] - a[field];
-        });
-      });
-    } else if (sort == 'DATE_MODIFIED_ASC') {
-      setNotifications(prev => {
-        return prev.sort((a, b) => {
-          if (!isNaN(Date.parse(a[field])) && !isNaN(Date.parse(b[field]))) {
-            return Date.parse(a[field]) - Date.parse(b[field]);
-          }
-          return a[field] - b[field];
-        });
-      });
-    }
+  const handleSelected = value => {
+    setSelectedItems(value);
   };
 
-  const bulkActions = [];
   const promotedBulkActions = [
     {
       content: 'Delete',
-      onAction: () => {
-        handleDelete(selectedItems);
+      onAction: async () => {
+        await handleDelete(selectedItems);
         setNotifications(prev => prev.filter(item => !selectedItems.includes(item.id)));
         setSelectedItems([]);
       }
     }
   ];
-  return (
-    <Page title="Notifications" fullWidth="true" subtitle="List of sales notifcation from Shopify">
-      {loading || deleting ? (
-        <div className="PreLoading PreLoading-Spinner">
-          <Spinner />
-        </div>
-      ) : (
+
+  if (loading) {
+    return (
+      <Page
+        title="Notifications"
+        fullWidth="true"
+        subtitle="List of sales notifcation from Shopify"
+      >
         <Layout>
           <Layout.Section>
+            <Card>
+              <div style={{textAlign: 'center', padding: '20px'}}>
+                <Spinner size="small" />
+              </div>
+            </Card>
+          </Layout.Section>
+        </Layout>
+      </Page>
+    );
+  }
+
+  return (
+    <Page title="Notifications" fullWidth="true" subtitle="List of sales notifcation from Shopify">
+      <Layout>
+        <Layout.Section>
+          <Card>
             <ResourceList
+              items={notifications}
+              loading={deleting}
               selectable
               sortValue={sortValue}
-              sortOptions={[
-                {label: 'Newest update', value: 'DATE_MODIFIED_DESC'},
-                {label: 'Oldest update', value: 'DATE_MODIFIED_ASC'}
-              ]}
-              onSortChange={sort => {
-                setSortValue(sort);
-                handleSort(sort);
-              }}
-              bulkActions={bulkActions}
               selectedItems={selectedItems}
               onSelectionChange={handleSelected}
               promotedBulkActions={promotedBulkActions}
               resourceName={{singular: 'notification', plural: 'notifications'}}
-              items={notifications}
+              emptyState={
+                <EmptyState
+                  heading="No notifications"
+                  image="https://cdn.shopify.com/s/files/1/0262/4071/2726/files/emptystate-files.png"
+                >
+                  <p>Your latest notifications will appear here</p>
+                </EmptyState>
+              }
+              sortOptions={[
+                {label: 'Newest update', value: 'timestamp:desc'},
+                {label: 'Oldest update', value: 'timestamp:asc'}
+              ]}
+              onSortChange={async sort => {
+                setSortValue(sort);
+                await fetchNoti(`/notifications?order=${sort}`);
+              }}
               renderItem={item => {
-                const {
-                  id,
-                  firstName,
-                  city,
-                  productName,
-                  country,
-                  productId,
-                  timestamp,
-                  productImage
-                } = item;
-
+                const date = new Date(
+                  item.timestamp._seconds * 1000 + item.timestamp._nanoseconds / 1000000
+                );
                 return (
-                  <ResourceItem id={id}>
+                  <ResourceItem id={item.id}>
                     <Stack distribution="equalSpacing">
                       <NotificationPopup
-                        firstName={firstName}
-                        city={city}
-                        country={country}
-                        productName={productName}
-                        timestamp={timestamp}
-                        productImage={productImage}
+                        firstName={item.firstName}
+                        city={item.city}
+                        country={item.country}
+                        productName={item.productName}
+                        timestamp={date}
+                        productImage={item.productImage}
                       />
-                      <div style={{textAlign: 'right'}}>
-                        From {moment(timestamp).format('MMMM DD,')}
+                      <TextStyle>
+                        From {moment(date).format('MMMM DD,')}
                         <br />
-                        {moment(timestamp).format('YYYY')}
-                      </div>
+                        {moment(date).format('YYYY')}
+                      </TextStyle>
                     </Stack>
                   </ResourceItem>
                 );
               }}
             />
-            <div style={{display: 'flex', justifyContent: 'center', marginTop: '20px'}}>
-              <Pagination />
-            </div>
-          </Layout.Section>
-        </Layout>
-      )}
+          </Card>
+        </Layout.Section>
+        <Layout.Section sectioned>
+          <div style={{display: 'flex', justifyContent: 'center', marginTop: '20px'}}>
+            <Pagination />
+          </div>
+        </Layout.Section>
+      </Layout>
     </Page>
   );
 }

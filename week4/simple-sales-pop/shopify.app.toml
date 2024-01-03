@@ -2,7 +2,7 @@
 
 name = "Simple Sales Pop"
 client_id = "654b6a5756be2512ee6c44c33ecab6f9"
-application_url = "https://settings-mac-performer-quote.trycloudflare.com/auth/shopify"
+application_url = "https://friendly-mathematics-canyon-circle.trycloudflare.com/auth/shopify"
 embedded = true
 
 [access_scopes]
@@ -11,9 +11,9 @@ use_legacy_install_flow = true
 
 [auth]
 redirect_urls = [
-  "https://settings-mac-performer-quote.trycloudflare.com/auth/shopify/callback",
-  "https://settings-mac-performer-quote.trycloudflare.com/authSa/shopify/callback",
-  "https://settings-mac-performer-quote.trycloudflare.com/auth/shopify/embed/callback",
+  "https://friendly-mathematics-canyon-circle.trycloudflare.com/auth/shopify/callback",
+  "https://friendly-mathematics-canyon-circle.trycloudflare.com/authSa/shopify/callback",
+  "https://friendly-mathematics-canyon-circle.trycloudflare.com/auth/shopify/embed/callback",
   "https://localhost:3000/auth/shopify/callback",
   "https://localhost:3000/authSa/shopify/callback",
   "https://localhost:3000/auth/shopify/embed/callback"

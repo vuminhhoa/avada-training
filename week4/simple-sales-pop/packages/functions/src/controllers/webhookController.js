@@ -1,20 +1,21 @@
 import {getShopByShopifyDomain} from '@avada/shopify-auth';
 import Shopify from 'shopify-api-node';
-import {add} from '../repositories/notificationsRepository';
-import {getNotificationItem} from './notificationsController';
+import * as notificationsRepo from '../repositories/notificationsRepository';
+import {syncNewOrderToNoti} from '../services/notificationService';
 
 export async function listenNewOrder(ctx) {
   try {
-    const shopifyDomain = ctx.get('X-Shopify-Shop-Domain');
-    const orderData = ctx.req.body;
-    const shop = await getShopByShopifyDomain(shopifyDomain);
+    const newOrder = ctx.req.body;
+    const shopDomain = ctx.get('X-Shopify-Shop-Domain');
+    const shopInfo = await getShopByShopifyDomain(shopDomain);
     const shopify = new Shopify({
-      shopName: shopifyDomain,
-      accessToken: shop.accessToken
+      shopName: shopDomain,
+      accessToken: shopInfo.accessToken
     });
 
-    const notification = await getNotificationItem(shopify, orderData);
-    await add({shopId: shop.id, shopifyDomain, data: notification});
+    const newNotification = await syncNewOrderToNoti(shopify, newOrder);
+    await notificationsRepo.add({shopId: shopInfo.id, shopDomain, ...newNotification});
+
     return (ctx.body = {
       success: true
     });

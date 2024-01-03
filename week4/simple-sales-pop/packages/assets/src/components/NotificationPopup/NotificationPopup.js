@@ -2,6 +2,9 @@ import React from 'react';
 import './NoticationPopup.scss';
 import moment from 'moment';
 import {truncateString} from '../../helpers/utils';
+import {Icon, TextStyle} from '@shopify/polaris';
+import {TickMinor} from '@shopify/polaris-icons';
+
 /**
  *
  * @param {*} param0
@@ -13,10 +16,10 @@ export const NotificationPopup = ({
   country = 'United States',
   productName = 'Puffer Jacket With Hidden Hood',
   timestamp = `${new Date()}`,
-  productImage = 'http://paris.mageplaza.com/images/shop/single/big-1.jpg',
-  settings = {hideTimeAgo: false, truncateProductName: false}
+  productImage = 'https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg',
+  hideTimeAgo = false,
+  truncateProductName = false
 }) => {
-  const {hideTimeAgo, truncateProductName} = settings;
   return (
     <div className="Avava-SP__Wrapper fadeInUp animated">
       <div className="Avava-SP__Inner">
@@ -38,7 +41,8 @@ export const NotificationPopup = ({
               <div className={'Avada-SP__Footer'}>
                 {hideTimeAgo ? '' : `${moment(timestamp).fromNow()}`}{' '}
                 <span className="uni-blue">
-                  <i className="fa fa-check" aria-hidden="true" /> by Avada
+                  <Icon source={TickMinor} color="primary"></Icon>
+                  <TextStyle>by Avada</TextStyle>
                 </span>
               </div>
             </div>

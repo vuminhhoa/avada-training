@@ -13,9 +13,12 @@ const collection = firestore.collection('notifications');
 /**
  * @param {shopId: string, data: object}
  */
-export async function add({data, shopId, shopifyDomain}) {
+export async function add(data) {
   try {
-    return collection.add({shopId: shopId, shopifyDomain: shopifyDomain, ...data});
+    return collection.add({
+      ...data,
+      timestamp: new Date(data.timestamp)
+    });
   } catch (e) {
     console.error(e);
     return null;
@@ -24,17 +27,18 @@ export async function add({data, shopId, shopifyDomain}) {
 
 /**
  * @param {limit, sort}
- * @returns {[{id: string, timestamp: string, shopId: string, city: string, productId: number, productImage:string, country: string, firstName: string}, ...]}
+ * @returns {Promise<[{id: string, timestamp: string, shopId: string, city: string, productId: number, productImage:string, country: string, firstName: string}, ...]>}
  */
-export async function list({shopId, limit = 10, sort = 'desc'} = {}) {
+export async function list({shopId, limit = 10, order = 'timestamp:desc'} = {}) {
   try {
-    let query = collection.where('shopId', '==', shopId);
-    if (sort) {
-      query = query.orderBy('timestamp', sort);
-    }
-    if (limit) {
-      query = query.limit(limit);
-    }
+    const orderSplit = order.split(':');
+    const field = orderSplit[0];
+    const sort = orderSplit[1];
+    const query = collection
+      .where('shopId', '==', shopId)
+      .orderBy(field, sort)
+      .limit(limit);
+
     const notiSnapshot = await query.get();
     return notiSnapshot.docs.map(doc => ({id: doc.id, ...doc.data()}));
   } catch (e) {

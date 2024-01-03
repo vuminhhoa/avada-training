@@ -53,9 +53,9 @@ export async function updateOne(shopId, data) {
 /**
  * @param {shopId: string, data: object}
  */
-export async function add(shopId, data) {
+export async function add(data) {
   try {
-    return collection.add({shopId: shopId, ...data});
+    return collection.add({...data, timestamp: new Date()});
   } catch (e) {
     console.error(e);
     return null;
