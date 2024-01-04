@@ -8,7 +8,6 @@ import {
   Pagination,
   Spinner,
   TextStyle,
-  SkeletonPage,
   Card,
   EmptyState
 } from '@shopify/polaris';

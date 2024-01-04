@@ -4,6 +4,7 @@ import {addSettings} from '../services/settingService';
 import {syncNotifications} from '../services/notificationService';
 import {registerWebhook} from './webhookService';
 import Shopify from 'shopify-api-node';
+import {registerScriptTags} from './scripttagService';
 
 /**
  * @param ctx
@@ -20,8 +21,8 @@ export async function afterInstall(ctx) {
     await Promise.all([
       addSettings(shop.id, {...defaultSettings, shopifyDomain}),
       syncNotifications({shopify: shopify, shopifyDomain: shopifyDomain, shopId: shop.id}),
-      registerWebhook(shopify)
-      //   registerScriptTags({shopifyDomain, accessToken: shop.accessToken})
+      registerWebhook(shopify),
+      registerScriptTags(shopify)
     ]);
   } catch (error) {
     console.error(error);

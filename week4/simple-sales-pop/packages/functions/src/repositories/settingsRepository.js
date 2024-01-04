@@ -24,6 +24,7 @@ export async function getOne(shopId) {
       return null;
     }
     const settingDoc = setting.docs[0];
+
     return {id: settingDoc.id, ...settingDoc.data()};
   } catch (e) {
     console.error(e);

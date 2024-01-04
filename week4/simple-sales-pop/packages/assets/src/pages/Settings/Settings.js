@@ -145,7 +145,15 @@ export default function Settings() {
 
   if (loading) {
     return (
-      <SkeletonPage title="Settings" primaryAction fullWidth>
+      <Page
+        title="Settings"
+        fullWidth="true"
+        subtitle="Decide how your notifications will display"
+        primaryAction={{
+          content: 'SAVE',
+          loading: loading
+        }}
+      >
         <Layout>
           <Layout.Section oneThird>
             <SkeletonBodyText lines={4} />
@@ -162,7 +170,7 @@ export default function Settings() {
             </Card>
           </Layout.Section>
         </Layout>
-      </SkeletonPage>
+      </Page>
     );
   }
 
