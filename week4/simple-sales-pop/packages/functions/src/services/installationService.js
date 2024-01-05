@@ -4,11 +4,12 @@ import {addSettings} from '../services/settingService';
 import {syncNotifications} from '../services/notificationService';
 import {registerWebhook} from './webhookService';
 import Shopify from 'shopify-api-node';
-import {registerScriptTags} from './scripttagService';
+// import {registerScriptTags} from './scripttagService';
 
 /**
- * @param ctx
- * @returns {Promise<void>}
+ * Executes after the installation of the app on a Shopify store.
+ * @param {Object} ctx - The context object containing information about the installation.
+ * @returns {Promise<void>} - A promise that resolves when the installation process is complete.
  */
 export async function afterInstall(ctx) {
   try {
@@ -21,8 +22,8 @@ export async function afterInstall(ctx) {
     await Promise.all([
       addSettings(shop.id, {...defaultSettings, shopifyDomain}),
       syncNotifications({shopify: shopify, shopifyDomain: shopifyDomain, shopId: shop.id}),
-      registerWebhook(shopify),
-      registerScriptTags(shopify)
+      registerWebhook(shopify)
+      // registerScriptTags(shopify)
     ]);
   } catch (error) {
     console.error(error);

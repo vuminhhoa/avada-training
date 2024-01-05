@@ -14247,6 +14247,11 @@ preact-html-converter@^0.4.2:
   dependencies:
     "@types/parse5" "^5.0.0"
 
+preact-lazy@^0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/preact-lazy/-/preact-lazy-0.0.3.tgz#c226c9f21e28dbb8dbd291193e7f90a86f5beb47"
+  integrity sha512-0/UpDxSXpSWdiOix6VJQAoe570ajiTyR5PqOmfRR1ttoZgX9KeCSOHXmThuRAq8AGYMUt/+RBudTsWUhwvZ0yA==
+
 preact@^10.3.2:
   version "10.19.3"
   resolved "https://registry.npmjs.org/preact/-/preact-10.19.3.tgz"

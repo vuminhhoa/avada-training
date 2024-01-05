@@ -11,7 +11,10 @@ const firestore = new Firestore();
 const collection = firestore.collection('notifications');
 
 /**
- * @param {shopId: string, data: object}
+ * Adds a new notification to the collection.
+ *
+ * @param {Object} data - The data of the notification.
+ * @returns {Promise<DocumentReference|null>} A promise that resolves with the reference to the added document, or null if an error occurs.
  */
 export async function add(data) {
   try {
@@ -26,8 +29,13 @@ export async function add(data) {
 }
 
 /**
- * @param {limit, sort}
- * @returns {Promise<[{id: string, timestamp: string, shopId: string, city: string, productId: number, productImage:string, country: string, firstName: string}, ...]>}
+ * Retrieves a list of notifications based on the provided parameters.
+ * @param {Object} options - The options for retrieving the notifications.
+ * @param {string} options.shopId - The ID of the shop.
+ * @param {number} [options.limit=10] - The maximum number of notifications to retrieve.
+ * @param {string} [options.order='timestamp:desc'] - The order in which the notifications should be sorted.
+ * @returns {Promise<Array<Object>>} - A promise that resolves to an array of notification objects.
+ * @throws {Error} - If an error occurs while retrieving the notifications.
  */
 export async function list({shopId, limit = 10, order = 'timestamp:desc'} = {}) {
   try {
@@ -48,7 +56,9 @@ export async function list({shopId, limit = 10, order = 'timestamp:desc'} = {}) 
 }
 
 /**
- * @param ids
+ * Removes notifications from the Firestore database.
+ * @param {string[]} ids - An array of notification IDs to be removed.
+ * @returns {Promise} - A promise that resolves when the batch deletion is completed, or null if an error occurs.
  */
 export async function remove(ids = []) {
   try {

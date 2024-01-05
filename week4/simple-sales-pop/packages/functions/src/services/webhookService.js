@@ -1,3 +1,8 @@
+/**
+ * Registers a webhook with Shopify.
+ * @param {Object} shopify - The Shopify instance.
+ * @returns {Promise<Object>} - A promise that resolves to the created webhook object.
+ */
 export async function registerWebhook(shopify) {
   const data = {
     topic: 'orders/create',

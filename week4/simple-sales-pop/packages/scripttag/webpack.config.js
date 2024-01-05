@@ -2,9 +2,7 @@ const path = require('path');
 const Dotenv = require('dotenv-webpack');
 
 const isProduction = process.env.NODE_ENV === 'production';
-const environmentPath = !process.env.ENVIRONMENT
-  ? '.env'
-  : `.env.${process.env.ENVIRONMENT}`;
+const environmentPath = !process.env.ENVIRONMENT ? '.env' : `.env.${process.env.ENVIRONMENT}`;
 
 /**
  * @link https://stackoverflow.com/questions/47830273/babel-plugin-preset-files-are-not-allowed-to-export-objects-only-functions
@@ -15,7 +13,9 @@ module.exports = {
   entry: ['./src/index.js'],
   output: {
     path: path.resolve(__dirname, '../../static/scripttag'),
-    filename: 'avada-sale-pop.min.js'
+    filename: 'avada-sale-pop.min.js',
+    chunkFilename: '[name].avada-sale-pop.min.js',
+    publicPath: `http://localhost:5000/scripttag/`
   },
   resolve: {
     alias: {

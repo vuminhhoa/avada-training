@@ -3,6 +3,11 @@ import Shopify from 'shopify-api-node';
 import * as notificationsRepo from '../repositories/notificationsRepository';
 import {syncNewOrderToNoti} from '../services/notificationService';
 
+/**
+ * Listens for a new order webhook and performs necessary actions.
+ * @param {Object} ctx - The context object containing the request and response information.
+ * @returns {Object} - The response object indicating the success or failure of the operation.
+ */
 export async function listenNewOrder(ctx) {
   try {
     const newOrder = ctx.req.body;

@@ -4,6 +4,7 @@
   z-index: 99;
   position: fixed;
 }
+
 .bottom-right {
   bottom: 15px;
   right: 15px;
@@ -102,9 +103,10 @@
   line-height: 16px;
   margin-top: 5px;
 }
+
 .Avava-SP__Wrapper .Avada-SP__Content .uni-blue {
   color: #2196f3;
-  border-left: 1px solid #e2e4e9;
+  // border-left: 1px solid #e2e4e9;
   margin-left: 8px;
   padding-left: 8px;
 }
@@ -117,6 +119,34 @@
   opacity: 1;
 }
 
-.Avada-SalePop__OuterWrapper.fade-out {
-  opacity: 0;
+.close-button {
+  position: absolute;
+  top: 5px; /* Adjust the top distance as needed */
+  right: 5px; /* Adjust the right distance as needed */
+  background-color: transparent;
+  border: none;
+  color: #333; /* Set the desired color */
+  font-size: 14px;
+  cursor: pointer;
+  outline: none;
+  z-index: 1; /* Ensure the button is above other elements */
+}
+
+.close-button:hover {
+  color: #ff0000; /* Set the desired hover color */
+}
+.checkmark {
+  position: relative;
+}
+.checkmark::before {
+  content: '\2713'; /* Unicode character for checkmark */
+  font-size: 14px;
+  margin-right: 5px; /* Adjust spacing as needed */
+  position: absolute;
+  left: -5px;
+}
+.Avada-SP__Footer {
+  display: flex;
+  align-items: center; /* Align items vertically in the center */
+  justify-content: space-between;
 }

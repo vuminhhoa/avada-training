@@ -1,5 +1,13 @@
 import * as notificationsRepo from '../repositories/notificationsRepository';
 
+/**
+ * Synchronizes notifications from Shopify and adds them to the notifications repository.
+ * @param {Object} options - The options for syncing notifications.
+ * @param {Object} options.shopify - The Shopify instance.
+ * @param {string} options.shopId - The ID of the shop.
+ * @param {string} options.shopifyDomain - The domain of the Shopify store.
+ * @returns {Promise<Array>} - A promise that resolves to an array of added notifications.
+ */
 export async function syncNotifications({shopify, shopId, shopifyDomain}) {
   const query = `{
       orders(first: 30) {
@@ -58,6 +66,13 @@ export async function syncNotifications({shopify, shopId, shopifyDomain}) {
   ]);
 }
 
+/**
+ * Syncs a new order to the notification service.
+ *
+ * @param {Object} shopify - The Shopify API object.
+ * @param {Object} orderData - The order data object.
+ * @returns {Promise<Object>} - The data object containing the synced order information.
+ */
 export async function syncNewOrderToNoti(shopify, orderData) {
   const order = orderData;
   const productId = order?.line_items[0]?.product_id;

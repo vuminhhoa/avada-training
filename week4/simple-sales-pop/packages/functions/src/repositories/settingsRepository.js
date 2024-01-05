@@ -11,8 +11,9 @@ const firestore = new Firestore();
 const collection = firestore.collection('settings');
 
 /**
- * @param {string} id
- * @returns {Object}
+ * Retrieves a single setting document based on the provided shopId.
+ * @param {string} shopId - The ID of the shop.
+ * @returns {Promise<Object|null>} - A promise that resolves to the setting document object if found, or null if not found.
  */
 export async function getOne(shopId) {
   try {
@@ -33,7 +34,11 @@ export async function getOne(shopId) {
 }
 
 /**
- * @param {id: string, data: Object}
+ * Updates a single setting document in the collection based on the provided shopId.
+ *
+ * @param {string} shopId - The ID of the shop.
+ * @param {object} data - The updated data for the setting document.
+ * @returns {Promise<firebase.firestore.DocumentReference|null>} - A promise that resolves to the updated document reference if successful, or null if the setting document does not exist or an error occurs.
  */
 export async function updateOne(shopId, data) {
   try {
@@ -52,7 +57,9 @@ export async function updateOne(shopId, data) {
 }
 
 /**
- * @param {shopId: string, data: object}
+ * Adds data to the collection with a timestamp.
+ * @param {Object} data - The data to be added.
+ * @returns {Promise<firebase.firestore.DocumentReference|null>} - A promise that resolves to the document reference if successful, or null if an error occurs.
  */
 export async function add(data) {
   try {
