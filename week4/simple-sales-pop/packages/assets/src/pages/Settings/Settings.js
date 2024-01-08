@@ -39,7 +39,6 @@ export default function Settings() {
       id: 'display',
       title: 'APPEARANCE',
       content: 'Display',
-      accessibilityLabel: 'All customers',
       body: (
         <FormLayout>
           <DesktopPositionInput
@@ -48,7 +47,6 @@ export default function Settings() {
             helpText="The display position of all the pop on your website."
             onChange={val => handleChangeInput('position', val)}
           />
-
           <Checkbox
             checked={settings.hideTimeAgo}
             label="Hide time ago"
@@ -70,6 +68,7 @@ export default function Settings() {
               type="number"
               onChange={val => handleChangeInput('displayDuration', val)}
               suffix="second(s)"
+              min={1}
             />
             <RangeSliderWithText
               label="Gap time between two pops"
@@ -78,9 +77,9 @@ export default function Settings() {
               type="number"
               onChange={val => handleChangeInput('popsInterval', val)}
               suffix="second(s)"
+              min={1}
             />
           </FormLayout.Group>
-
           <FormLayout.Group>
             <RangeSliderWithText
               label="Time before the first pop"
@@ -89,6 +88,7 @@ export default function Settings() {
               type="number"
               onChange={val => handleChangeInput('firstDelay', val)}
               suffix="second(s)"
+              min={1}
             />
             <RangeSliderWithText
               label="Maximum of popups"

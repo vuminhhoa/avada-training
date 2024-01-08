@@ -5,7 +5,7 @@ import {RangeSlider, TextField} from '@shopify/polaris';
  * @param {*} param0
  * @returns
  */
-export const RangeSliderWithText = ({label, value, suffix, onChange, type, helpText, max}) => {
+export const RangeSliderWithText = ({label, value, suffix, onChange, type, helpText, max, min}) => {
   return (
     <RangeSlider
       label={label}
@@ -14,6 +14,7 @@ export const RangeSliderWithText = ({label, value, suffix, onChange, type, helpT
       max={max}
       helpText={helpText}
       onChange={onChange}
+      min={min}
       suffix={
         <div style={{width: '150px'}}>
           <TextField suffix={suffix} type={type} value={String(value)} onChange={onChange} />

@@ -45,7 +45,7 @@ export async function list({shopId, limit = 10, order = 'timestamp:desc'} = {}) 
     const query = collection
       .where('shopId', '==', shopId)
       .orderBy(field, sort)
-      .limit(limit);
+      .limit(Number(limit));
 
     const notiSnapshot = await query.get();
     return notiSnapshot.docs.map(doc => ({id: doc.id, ...doc.data()}));

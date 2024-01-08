@@ -1,9 +1,9 @@
 import {getShopByShopifyDomain} from '@avada/shopify-auth';
 import defaultSettings from '../const/settings/defaultSetting';
-import {addSettings} from '../services/settingService';
 import {syncNotifications} from '../services/notificationService';
 import {registerWebhook} from './webhookService';
 import Shopify from 'shopify-api-node';
+import {addDefaultSettings} from '../repositories/settingsRepository';
 // import {registerScriptTags} from './scripttagService';
 
 /**
@@ -20,7 +20,7 @@ export async function afterInstall(ctx) {
       shopName: shopifyDomain
     });
     await Promise.all([
-      addSettings(shop.id, {...defaultSettings, shopifyDomain}),
+      addDefaultSettings(shop.id, {...defaultSettings, shopifyDomain}),
       syncNotifications({shopify: shopify, shopifyDomain: shopifyDomain, shopId: shop.id}),
       registerWebhook(shopify)
       // registerScriptTags(shopify)

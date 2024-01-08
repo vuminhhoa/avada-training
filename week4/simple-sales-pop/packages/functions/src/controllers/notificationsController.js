@@ -9,9 +9,14 @@ import {getCurrentShop} from '../helpers/auth';
  */
 export async function listNotifications(ctx) {
   const shopID = getCurrentShop(ctx);
-  const {limit, order} = ctx.query;
-  const notifications = await notificationsRepo.list({shopId: shopID, limit: limit, order: order});
-  ctx.body = {data: notifications, success: true};
+  const {limit, order, page} = ctx.query;
+  const notifications = await notificationsRepo.list({
+    shopId: shopID,
+    limit: limit,
+    order: order
+  });
+  const notiSlice = notifications.slice((page - 1) * limit, limit + 1);
+  ctx.body = {data: notiSlice, success: true};
 }
 
 /**

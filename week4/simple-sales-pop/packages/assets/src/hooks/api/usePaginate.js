@@ -20,15 +20,15 @@ export default function usePaginate({
   keepPreviousData = false,
   presentData = null,
   defaultLimit = 20,
-  defaultSort = 'createdAt:asc',
-  searchKey = 'searchKey',
+  defaultSort = 'timestamp:desc',
+  // searchKey = 'searchKey',
   initQueries = {}
 }) {
   const [queries, setQueries] = useState({
     page: 1,
-    sort: defaultSort,
+    order: defaultSort,
     limit: defaultLimit,
-    [searchKey]: '',
+    // [searchKey]: '',
     ...initQueries
   });
 

@@ -69,3 +69,25 @@ export async function add(data) {
     return null;
   }
 }
+
+/**
+ * Adds settings for a specific shop.
+ * @param {string} shopId - The ID of the shop.
+ * @param {object} defaultData - The default settings data.
+ * @returns {Promise<void>} - A promise that resolves when the settings are added.
+ */
+export async function addDefaultSettings(shopId, defaultData) {
+  try {
+    const settingInDb = await getOne(shopId);
+
+    if (!settingInDb) {
+      add({
+        ...defaultData,
+        shopId
+      });
+    }
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
+}

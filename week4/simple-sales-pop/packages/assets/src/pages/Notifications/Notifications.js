@@ -16,6 +16,7 @@ import moment from 'moment';
 import useFetchApi from '../../hooks/api/useFetchApi';
 import useDeleteApi from '../../hooks/api/useDeleteApi';
 import defaultNotifications from '@avada/functions/src/const/notifications/defaultNotifications';
+import usePaginate from '../../hooks/api/usePaginate';
 
 /**
  * Render a notification page
@@ -24,19 +25,30 @@ import defaultNotifications from '@avada/functions/src/const/notifications/defau
  * @constructor
  */
 export default function Notifications() {
-  const {
-    data: notifications,
-    setData: setNotifications,
-    loading,
-    fetchApi: fetchNoti
-  } = useFetchApi({
-    url: '/notifications',
-    defaultData: defaultNotifications
-  });
   const {deleting, handleDelete} = useDeleteApi({url: '/notifications'});
   const [sortValue, setSortValue] = useState('timestamp:desc');
   const [selectedItems, setSelectedItems] = useState([]);
 
+  const {
+    data: notifications,
+    setData: setNotifications,
+    loading,
+    fetchApi: fetchNoti,
+    count,
+    setCount,
+    fetched,
+    onQueryChange,
+    onQueriesChange,
+    nextPage,
+    prevPage,
+    pageInfo: {hasPre, hasNext}
+  } = usePaginate({
+    url: '/notifications',
+    defaultData: defaultNotifications,
+    defaultLimit: 10,
+    defaultSort: 'timestamp:desc'
+  });
+  console.log(hasNext, hasPre);
   const handleSelected = value => {
     setSelectedItems(value);
   };
@@ -98,9 +110,9 @@ export default function Notifications() {
                 {label: 'Newest update', value: 'timestamp:desc'},
                 {label: 'Oldest update', value: 'timestamp:asc'}
               ]}
-              onSortChange={async sort => {
+              onSortChange={sort => {
                 setSortValue(sort);
-                await fetchNoti(`/notifications?order=${sort}`);
+                fetchNoti('/notifications', {limit: 30, order: sort});
               }}
               renderItem={item => {
                 const date = new Date(
@@ -131,7 +143,12 @@ export default function Notifications() {
         </Layout.Section>
         <Layout.Section sectioned>
           <div style={{display: 'flex', justifyContent: 'center', marginTop: '20px'}}>
-            <Pagination />
+            <Pagination
+              hasNext={hasNext}
+              hasPrevious={hasPre}
+              onNext={nextPage}
+              onPrevious={prevPage}
+            />
           </div>
         </Layout.Section>
       </Layout>
