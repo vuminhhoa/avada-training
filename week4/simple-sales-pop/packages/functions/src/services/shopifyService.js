@@ -1,3 +1,4 @@
+require('dotenv').config({path: '../../.env'});
 import * as notificationsRepo from '../repositories/notificationsRepository';
 
 /**
@@ -44,7 +45,7 @@ export async function syncNotifications({shopify, shopId, shopifyDomain}) {
   const data = await shopify.graphql(query);
 
   return await Promise.all([
-    data.orders.edges.map(order => {
+    data.orders.edges.forEach(order => {
       const orderInfo = order.node;
       const firstProductInfo = order.node.lineItems.edges[0]?.node;
       const customerInfo = order.node.customer;
@@ -89,4 +90,37 @@ export async function syncNewOrderToNoti(shopify, orderData) {
   };
 
   return data;
+}
+
+/**
+ * Registers script tags for Shopify.
+ * @param {Object} shopify - The Shopify object.
+ * @returns {Promise} - A promise that resolves with the created script tag.
+ */
+export async function registerScriptTags(shopify) {
+  const URL = '';
+  const data = {
+    event: 'onload',
+    src: URL ? URL : `https://localhost:3000/scripttag/avada-sale-pop.min.js`
+  };
+  const scriptTags = await shopify.scriptTag.list();
+  const scriptTag = scriptTags.filter(item => item.src === data.src);
+  if (!scriptTag) {
+    return shopify.scriptTag.create(data);
+  }
+}
+
+/**
+ * Registers a webhook with Shopify.
+ * @param {Object} shopify - The Shopify instance.
+ * @returns {Promise<Object>} - A promise that resolves to the created webhook object.
+ */
+export async function registerWebhook(shopify) {
+  const data = {
+    topic: 'orders/create',
+    address: `https://${process.env.BASE_URL}/webhook/order/new`,
+    format: 'json'
+  };
+
+  return shopify.webhook.create(data);
 }

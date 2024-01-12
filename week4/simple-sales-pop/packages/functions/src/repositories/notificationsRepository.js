@@ -60,10 +60,10 @@ export async function list({shopId, limit = 10, order = 'timestamp:desc'} = {}) 
  * @param {string[]} ids - An array of notification IDs to be removed.
  * @returns {Promise} - A promise that resolves when the batch deletion is completed, or null if an error occurs.
  */
-export async function remove(ids = []) {
+export function remove(ids = []) {
   try {
     const batch = firestore.batch();
-    ids.map(id => batch.delete(collection.doc(id)));
+    ids.forEach(id => batch.delete(collection.doc(id)));
     return batch.commit();
   } catch (e) {
     console.error(e);

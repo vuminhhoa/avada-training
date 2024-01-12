@@ -1,6 +1,7 @@
 import {getShopByShopifyDomain} from '@avada/shopify-auth';
 import * as settingsRepo from '../repositories/settingsRepository';
 import * as notificationsRepo from '../repositories/notificationsRepository';
+import moment from 'moment';
 
 /**
  * Retrieves the list of notifications for a specific Shopify domain.
@@ -15,10 +16,20 @@ export async function listNotifications(ctx) {
     settingsRepo.getOne(shop.id),
     notificationsRepo.list({shopId: shop.id, limit: 80})
   ]);
+
+  const notiMap = notifications.map(notification => ({
+    ...notification,
+    timestamp: moment(
+      new Date(
+        notification.timestamp._seconds * 1000 + notification.timestamp._nanoseconds / 1000000
+      )
+    ).fromNow()
+  }));
+
   ctx.body = {
     data: {
       settings: settings,
-      notifications: notifications
+      notifications: notiMap
     }
   };
 }

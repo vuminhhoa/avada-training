@@ -1,7 +1,6 @@
 import React from 'react';
 import './NoticationPopup.scss';
 import {truncateString} from '../../../../assets/src/helpers/utils';
-import moment from 'moment';
 
 const NotificationPopup = ({
   firstName = 'John Doe',
@@ -32,12 +31,12 @@ const NotificationPopup = ({
                 purchased {truncateProductName ? truncateString(productName, 16) : productName}
               </div>
               <div className={'Avada-SP__Footer'}>
-                <div>{hideTimeAgo ? '' : `${moment(timestamp).fromNow()}`}</div>
+                <div>{hideTimeAgo ? '' : timestamp}</div>
                 <div className="uni-blue checkmark">by Avada</div>
               </div>
               <button
                 className="close-button"
-                onClick={() => document.querySelector('#Avada-SalePop').remove('fade-in')}
+                onClick={() => document.querySelector('#Avada-SalePop').remove()}
               >
                 &#10006;
               </button>

@@ -3,9 +3,7 @@ import {render} from 'preact';
 import React from 'preact/compat';
 import lazy from 'preact-lazy';
 // import NotificationPopup from '../components/NotificationPopup/NotificationPopup';
-const NotificationPopup = lazy(
-  async () => await import('../components/NotificationPopup/NotificationPopup')
-);
+const NotificationPopup = lazy(() => import('../components/NotificationPopup/NotificationPopup'));
 import checkUrlAllowShow from '../helpers/checkUrl';
 
 export default class DisplayManager {
@@ -17,7 +15,6 @@ export default class DisplayManager {
     this.notifications = notifications;
     this.settings = settings;
 
-    // My display logic here
     const href = window.location.href.replace(/[?#].*$/g, '');
 
     const allowShowPop = checkUrlAllowShow({
@@ -26,14 +23,15 @@ export default class DisplayManager {
       includedUrls: settings.includedUrls,
       excludedUrls: settings.excludedUrls
     });
+    if (!allowShowPop) {
+      return;
+    }
 
-    if (allowShowPop) {
-      this.insertContainer(settings.position);
-      const popups = notifications.slice(0, settings.maxPopsDisplay);
-      await this.delay(settings.firstDelay * 1000);
-      for (const pop of popups) {
-        await this.displayOnePopup(pop, settings);
-      }
+    this.insertContainer(settings.position);
+    const popups = notifications.slice(0, settings.maxPopsDisplay);
+    await this.delay(settings.firstDelay * 1000);
+    for (const pop of popups) {
+      await this.displayOnePopup(pop, settings);
     }
   }
 
@@ -46,12 +44,12 @@ export default class DisplayManager {
 
   fadeOut() {
     const container = document.querySelector('#Avada-SalePop');
-    container.classList.remove('fade-in');
+    container.classList.add('fade-out');
   }
 
-  async display({notification}) {
+  display({notification}) {
     const container = document.querySelector('#Avada-SalePop');
-    container.classList.add('fade-in');
+    container.classList.remove('fade-out');
     render(
       <NotificationPopup
         {...notification}
@@ -65,7 +63,7 @@ export default class DisplayManager {
   insertContainer(position) {
     const popupEl = document.createElement('div');
     popupEl.id = `Avada-SalePop`;
-    popupEl.classList.add('Avada-SalePop__OuterWrapper', position);
+    popupEl.classList.add(position);
     const targetEl = document.querySelector('body').firstChild;
     if (targetEl) {
       insertAfter(popupEl, targetEl);

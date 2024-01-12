@@ -45,6 +45,12 @@ if (!isProduction && process.env.SHOPIFY_API_KEY) {
     updateEnvFile('.env.development', {
       SHOPIFY_API_KEY: process.env.SHOPIFY_API_KEY
     });
+    updateEnvFile('../functions/.env', {
+      BASE_URL: process.env.HOST.replace('https://', '')
+    });
+    updateEnvFile('../scripttag/.env.development', {
+      BASE_URL: process.env.HOST.replace('https://', '')
+    });
   } catch (e) {
     console.error('Error changing the env file');
   }

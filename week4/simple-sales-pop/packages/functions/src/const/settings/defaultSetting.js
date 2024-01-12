@@ -1,14 +1,14 @@
 const defaultSettings = {
-  position: 'bottom-left',
-  hideTimeAgo: true,
-  truncateProductName: true,
+  position: 'top-left',
+  hideTimeAgo: false,
+  truncateProductName: false,
   displayDuration: 3,
-  firstDelay: 5,
+  firstDelay: 1,
   popsInterval: 2,
   maxPopsDisplay: 10,
   includedUrls: 'https://localhost:3000/settings',
   excludedUrls: 'https://localhost:3000/settings',
-  allowShow: 'specific'
+  allowShow: 'all'
 };
 
 export default defaultSettings;

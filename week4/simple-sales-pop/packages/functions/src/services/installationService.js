@@ -1,9 +1,8 @@
 import {getShopByShopifyDomain} from '@avada/shopify-auth';
 import defaultSettings from '../const/settings/defaultSetting';
-import {syncNotifications} from '../services/notificationService';
-import {registerWebhook} from './webhookService';
 import Shopify from 'shopify-api-node';
 import {addDefaultSettings} from '../repositories/settingsRepository';
+import {syncNotifications, registerWebhook} from '../services/shopifyService';
 // import {registerScriptTags} from './scripttagService';
 
 /**
