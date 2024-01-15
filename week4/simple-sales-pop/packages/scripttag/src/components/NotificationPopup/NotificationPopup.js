@@ -30,17 +30,17 @@ const NotificationPopup = ({
               <div className={'Avada-SP__Subtitle'}>
                 purchased {truncateProductName ? truncateString(productName, 16) : productName}
               </div>
-              <div className={'Avada-SP__Footer'}>
-                <div>{hideTimeAgo ? '' : timestamp}</div>
-                <div className="uni-blue checkmark">by Avada</div>
+              <div className={`Avada-SP__Footer`}>
+                {hideTimeAgo ? null : timestamp}
+                <div className="checkmark">by Avada</div>
               </div>
-              <button
-                className="close-button"
-                onClick={() => document.querySelector('#Avada-SalePop').remove()}
-              >
-                &#10006;
-              </button>
             </div>
+            <button
+              className="close-button"
+              onClick={() => document.querySelector('#Avada-SalePop').remove()}
+            >
+              &#10006;
+            </button>
           </a>
         </div>
       </div>

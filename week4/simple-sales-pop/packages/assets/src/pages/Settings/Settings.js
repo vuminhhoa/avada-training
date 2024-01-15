@@ -9,7 +9,6 @@ import {
   TextField,
   Select,
   FormLayout,
-  SkeletonPage,
   SkeletonBodyText
 } from '@shopify/polaris';
 import NotificationPopup from '../../components/NotificationPopup/NotificationPopup';
@@ -43,19 +42,19 @@ export default function Settings() {
         <FormLayout>
           <DesktopPositionInput
             label="Desktop position"
-            value={settings.position}
             helpText="The display position of all the pop on your website."
+            value={settings.position}
             onChange={val => handleChangeInput('position', val)}
           />
           <Checkbox
-            checked={settings.hideTimeAgo}
             label="Hide time ago"
+            checked={settings.hideTimeAgo}
             onChange={val => handleChangeInput('hideTimeAgo', val)}
           />
           <Checkbox
             label="Truncate content text"
-            checked={settings.truncateProductName}
             helpText="If your product name is long for one line. It will be truncated to 'Product na...'"
+            checked={settings.truncateProductName}
             onChange={val => handleChangeInput('truncateProductName', val)}
           />
           <TextStyle variation="strong">TIMING</TextStyle>
@@ -151,12 +150,16 @@ export default function Settings() {
         subtitle="Decide how your notifications will display"
         primaryAction={{
           content: 'SAVE',
-          loading: loading
+          disabled: loading
         }}
       >
         <Layout>
           <Layout.Section oneThird>
-            <SkeletonBodyText lines={4} />
+            <Card>
+              <Card.Section>
+                <SkeletonBodyText lines={4} />
+              </Card.Section>
+            </Card>
           </Layout.Section>
 
           <Layout.Section>

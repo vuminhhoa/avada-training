@@ -43,21 +43,22 @@ export async function syncNotifications({shopify, shopId, shopifyDomain}) {
       }
     }`;
   const data = await shopify.graphql(query);
+  const orders = data.orders.edges;
 
   return await Promise.all([
-    data.orders.edges.forEach(order => {
+    orders.forEach(order => {
       const orderInfo = order.node;
-      const firstProductInfo = order.node.lineItems.edges[0]?.node;
-      const customerInfo = order.node.customer;
+      const firstProduct = order.node.lineItems.edges[0].node;
+      const customer = order.node.customer;
 
       const data = {
+        firstName: customer?.firstName || null,
+        city: customer?.defaultAddress?.city || null,
+        country: customer?.defaultAddress?.country || null,
+        productName: firstProduct.product.title,
+        productId: firstProduct.product.id,
+        productImage: firstProduct.image.url,
         timestamp: orderInfo.createdAt,
-        firstName: customerInfo.firstName || null,
-        city: customerInfo.defaultAddress.city || null,
-        country: customerInfo.defaultAddress.country || null,
-        productName: firstProductInfo.product.title,
-        productId: firstProductInfo.product.id,
-        productImage: firstProductInfo.image.url,
         shopId: shopId,
         shopifyDomain: shopifyDomain
       };
@@ -75,18 +76,18 @@ export async function syncNotifications({shopify, shopId, shopifyDomain}) {
  * @returns {Promise<Object>} - The data object containing the synced order information.
  */
 export async function syncNewOrderToNoti(shopify, orderData) {
-  const order = orderData;
-  const productId = order?.line_items[0]?.product_id;
-  const detailProduct = await shopify.product.get(productId);
-  const productImage = detailProduct.image?.src;
+  const customer = orderData.customer;
+  const firstProduct = orderData.line_items[0];
+  const firstProductDetail = await shopify.product.get(firstProduct.product_id);
+
   const data = {
-    firstName: order.customer?.first_name || null,
-    city: order.customer.default_address?.city || null,
-    productName: order.line_items[0]?.name,
-    country: order.customer.default_address?.country || null,
-    productId: productId,
-    timestamp: order?.created_at,
-    productImage: productImage
+    firstName: customer?.first_name || null,
+    city: customer?.default_address?.city || null,
+    country: customer?.default_address?.country || null,
+    productName: firstProduct.name,
+    productId: firstProduct.product_id,
+    productImage: firstProductDetail.image.src,
+    timestamp: orderData.created_at
   };
 
   return data;
@@ -98,10 +99,9 @@ export async function syncNewOrderToNoti(shopify, orderData) {
  * @returns {Promise} - A promise that resolves with the created script tag.
  */
 export async function registerScriptTags(shopify) {
-  const URL = '';
   const data = {
     event: 'onload',
-    src: URL ? URL : `https://localhost:3000/scripttag/avada-sale-pop.min.js`
+    src: 'https://localhost:3000/scripttag/avada-sale-pop.min.js'
   };
   const scriptTags = await shopify.scriptTag.list();
   const scriptTag = scriptTags.filter(item => item.src === data.src);

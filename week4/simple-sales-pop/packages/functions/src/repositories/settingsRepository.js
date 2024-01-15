@@ -21,9 +21,8 @@ export async function getOne(shopId) {
       .where('shopId', '==', shopId)
       .limit(1)
       .get();
-    if (setting.empty) {
-      return null;
-    }
+    if (setting.empty) return null;
+
     const settingDoc = setting.docs[0];
 
     return {id: settingDoc.id, ...settingDoc.data()};
@@ -34,11 +33,11 @@ export async function getOne(shopId) {
 }
 
 /**
- * Updates a single setting document in the collection based on the provided shopId.
+ * Updates a single setting document in the database.
  *
  * @param {string} shopId - The ID of the shop.
- * @param {object} data - The updated data for the setting document.
- * @returns {Promise<firebase.firestore.DocumentReference|null>} - A promise that resolves to the updated document reference if successful, or null if the setting document does not exist or an error occurs.
+ * @param {Object} data - The updated data for the setting.
+ * @returns {Promise<firebase.firestore.WriteResult|null>} A promise that resolves to the result of the update operation, or null if the setting is not found or an error occurs.
  */
 export async function updateOne(shopId, data) {
   try {
@@ -46,9 +45,8 @@ export async function updateOne(shopId, data) {
       .where('shopId', '==', shopId)
       .limit(1)
       .get();
-    if (setting.empty) {
-      return null;
-    }
+    if (setting.empty) return null;
+
     return collection.doc(data.id).update({...data});
   } catch (e) {
     console.error(e);
@@ -71,21 +69,21 @@ export async function add(data) {
 }
 
 /**
- * Adds settings for a specific shop.
+ * Adds default settings for a shop.
+ *
  * @param {string} shopId - The ID of the shop.
  * @param {object} defaultData - The default settings data.
- * @returns {Promise<void>} - A promise that resolves when the settings are added.
+ * @returns {Promise<object|null>} - A promise that resolves to the added settings object, or null if the settings already exist or an error occurred.
  */
 export async function addDefaultSettings(shopId, defaultData) {
   try {
     const settingInDb = await getOne(shopId);
+    if (settingInDb) return null;
 
-    if (!settingInDb) {
-      add({
-        ...defaultData,
-        shopId
-      });
-    }
+    return add({
+      ...defaultData,
+      shopId
+    });
   } catch (e) {
     console.error(e);
     return null;

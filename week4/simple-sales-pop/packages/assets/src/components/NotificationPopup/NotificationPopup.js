@@ -2,8 +2,6 @@ import React from 'react';
 import './NoticationPopup.scss';
 import moment from 'moment';
 import {truncateString} from '../../helpers/utils';
-import {Icon, TextStyle} from '@shopify/polaris';
-import {TickMinor} from '@shopify/polaris-icons';
 
 /**
  *
@@ -38,12 +36,9 @@ export const NotificationPopup = ({
               <div className={'Avada-SP__Subtitle'}>
                 purchased {truncateProductName ? truncateString(productName, 16) : productName}
               </div>
-              <div className={'Avada-SP__Footer'}>
-                {hideTimeAgo ? '' : `${moment(timestamp).fromNow()}`}{' '}
-                <span className="uni-blue">
-                  <Icon source={TickMinor} color="primary"></Icon>
-                  <TextStyle>by Avada</TextStyle>
-                </span>
+              <div className={`Avada-SP__Footer`}>
+                {hideTimeAgo ? null : moment(timestamp).fromNow()}
+                <div className="checkmark">by Avada</div>
               </div>
             </div>
           </a>

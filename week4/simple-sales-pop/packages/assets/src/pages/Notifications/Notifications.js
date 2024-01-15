@@ -16,7 +16,6 @@ import moment from 'moment';
 import useFetchApi from '../../hooks/api/useFetchApi';
 import useDeleteApi from '../../hooks/api/useDeleteApi';
 import defaultNotifications from '@avada/functions/src/const/notifications/defaultNotifications';
-import usePaginate from '../../hooks/api/usePaginate';
 
 /**
  * Render a notification page
@@ -25,30 +24,19 @@ import usePaginate from '../../hooks/api/usePaginate';
  * @constructor
  */
 export default function Notifications() {
-  const {deleting, handleDelete} = useDeleteApi({url: '/notifications'});
-  const [sortValue, setSortValue] = useState('timestamp:desc');
-  const [selectedItems, setSelectedItems] = useState([]);
-
   const {
     data: notifications,
     setData: setNotifications,
     loading,
-    fetchApi: fetchNoti,
-    count,
-    setCount,
-    fetched,
-    onQueryChange,
-    onQueriesChange,
-    nextPage,
-    prevPage,
-    pageInfo: {hasPre, hasNext}
-  } = usePaginate({
+    fetchApi: fetchNoti
+  } = useFetchApi({
     url: '/notifications',
-    defaultData: defaultNotifications,
-    defaultLimit: 10,
-    defaultSort: 'timestamp:desc'
+    defaultData: defaultNotifications
   });
-  console.log(hasNext, hasPre);
+  const {deleting, handleDelete} = useDeleteApi({url: '/notifications'});
+  const [sortValue, setSortValue] = useState('timestamp:desc');
+  const [selectedItems, setSelectedItems] = useState([]);
+
   const handleSelected = value => {
     setSelectedItems(value);
   };
@@ -74,7 +62,7 @@ export default function Notifications() {
         <Layout>
           <Layout.Section>
             <Card>
-              <div style={{textAlign: 'center', padding: '20px'}}>
+              <div style={{textAlign: 'center', padding: '5px'}}>
                 <Spinner size="small" />
               </div>
             </Card>
@@ -98,6 +86,14 @@ export default function Notifications() {
               onSelectionChange={handleSelected}
               promotedBulkActions={promotedBulkActions}
               resourceName={{singular: 'notification', plural: 'notifications'}}
+              sortOptions={[
+                {label: 'Newest update', value: 'timestamp:desc'},
+                {label: 'Oldest update', value: 'timestamp:asc'}
+              ]}
+              onSortChange={sort => {
+                setSortValue(sort);
+                fetchNoti('/notifications', {limit: 80, order: sort});
+              }}
               emptyState={
                 <EmptyState
                   heading="No notifications"
@@ -106,14 +102,6 @@ export default function Notifications() {
                   <p>Your latest notifications will appear here</p>
                 </EmptyState>
               }
-              sortOptions={[
-                {label: 'Newest update', value: 'timestamp:desc'},
-                {label: 'Oldest update', value: 'timestamp:asc'}
-              ]}
-              onSortChange={sort => {
-                setSortValue(sort);
-                fetchNoti('/notifications', {limit: 30, order: sort});
-              }}
               renderItem={item => {
                 const date = new Date(
                   item.timestamp._seconds * 1000 + item.timestamp._nanoseconds / 1000000
@@ -131,8 +119,7 @@ export default function Notifications() {
                       />
                       <TextStyle>
                         From {moment(date).format('MMMM DD,')}
-                        <br />
-                        {moment(date).format('YYYY')}
+                        <div style={{textAlign: 'right'}}>{moment(date).format('YYYY')}</div>
                       </TextStyle>
                     </Stack>
                   </ResourceItem>
@@ -143,12 +130,7 @@ export default function Notifications() {
         </Layout.Section>
         <Layout.Section sectioned>
           <div style={{display: 'flex', justifyContent: 'center', marginTop: '20px'}}>
-            <Pagination
-              hasNext={hasNext}
-              hasPrevious={hasPre}
-              onNext={nextPage}
-              onPrevious={prevPage}
-            />
+            <Pagination />
           </div>
         </Layout.Section>
       </Layout>
