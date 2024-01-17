@@ -41,9 +41,10 @@ export async function list({shopId, limit = 80, order = 'timestamp:desc'}) {
     const orderSplit = order.split(':');
     const field = orderSplit[0];
     const sort = orderSplit[1];
-
+    const priorDate = new Date(new Date().setDate(today.getDate() - 30));
     const query = collection
       .where('shopId', '==', shopId)
+      .where('timestamp', '>=', priorDate)
       .orderBy(field, sort)
       .limit(Number(limit));
     const notiSnapshot = await query.get();

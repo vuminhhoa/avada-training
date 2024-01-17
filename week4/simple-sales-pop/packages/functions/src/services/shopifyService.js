@@ -51,7 +51,7 @@ export async function syncNotifications({shopify, shopId, shopifyDomain}) {
       const firstProduct = order.node.lineItems.edges[0].node;
       const customer = order.node.customer;
 
-      const data = {
+      const orderData = {
         firstName: customer?.firstName || null,
         city: customer?.defaultAddress?.city || null,
         country: customer?.defaultAddress?.country || null,
@@ -63,34 +63,48 @@ export async function syncNotifications({shopify, shopId, shopifyDomain}) {
         shopifyDomain: shopifyDomain
       };
 
-      return notificationsRepo.add(data);
+      return notificationsRepo.add(orderData);
     })
   ]);
 }
 
 /**
- * Syncs a new order to the notification service.
+ * Syncs a order to the notification service.
  *
  * @param {Object} shopify - The Shopify API object.
- * @param {Object} orderData - The order data object.
+ * @param {Object} order - The order data object.
  * @returns {Promise<Object>} - The data object containing the synced order information.
  */
-export async function syncNewOrderToNoti(shopify, orderData) {
-  const customer = orderData.customer;
-  const firstProduct = orderData.line_items[0];
-  const firstProductDetail = await shopify.product.get(firstProduct.product_id);
+export async function syncOrderToNoti(shopify, order) {
+  const customer = order.customer;
+  const firstProduct = order.line_items[0];
 
-  const data = {
+  const queryfirstProductImage = `
+    {
+      product(id: "gid://shopify/Product/${firstProduct.product_id}") {
+          images(first: 1) {
+              edges {
+                  node {
+                      src
+                  }
+              }
+          }
+      }
+  }`;
+  const dataQuery = await shopify.graphql(queryfirstProductImage);
+  const firstProductImage = dataQuery.product.images.edges[0].node;
+
+  const notification = {
     firstName: customer?.first_name || null,
     city: customer?.default_address?.city || null,
     country: customer?.default_address?.country || null,
     productName: firstProduct.name,
     productId: firstProduct.product_id,
-    productImage: firstProductDetail.image.src,
-    timestamp: orderData.created_at
+    productImage: firstProductImage.src,
+    timestamp: order.created_at
   };
 
-  return data;
+  return notification;
 }
 
 /**

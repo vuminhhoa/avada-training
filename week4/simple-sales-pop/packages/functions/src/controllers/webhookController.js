@@ -1,7 +1,7 @@
 import {getShopByShopifyDomain} from '@avada/shopify-auth';
 import Shopify from 'shopify-api-node';
 import * as notificationsRepo from '../repositories/notificationsRepository';
-import {syncNewOrderToNoti} from '../services/shopifyService';
+import {syncOrderToNoti} from '../services/shopifyService';
 
 /**
  * Listens for new orders and performs necessary actions.
@@ -19,10 +19,10 @@ export async function listenNewOrder(ctx) {
       accessToken: shopInfo.accessToken
     });
 
-    const newNotification = await syncNewOrderToNoti(shopify, newOrder);
+    const newNotification = await syncOrderToNoti(shopify, newOrder);
     notificationsRepo.add({shopId: shopInfo.id, shopDomain, ...newNotification});
 
-    return (ctx.body = {success: true});
+    return (ctx.status = 200);
   } catch (e) {
     console.error(e);
     ctx.body = {success: false};

@@ -2,7 +2,7 @@
 
 name = "Simple Sales Pop"
 client_id = "654b6a5756be2512ee6c44c33ecab6f9"
-application_url = "https://vehicles-quote-comics-clinical.trycloudflare.com/auth/shopify"
+application_url = "https://inspiration-twenty-love-labour.trycloudflare.com/auth/shopify"
 embedded = true
 
 [access_scopes]
@@ -11,9 +11,9 @@ use_legacy_install_flow = true
 
 [auth]
 redirect_urls = [
-  "https://vehicles-quote-comics-clinical.trycloudflare.com/auth/shopify/callback",
-  "https://vehicles-quote-comics-clinical.trycloudflare.com/authSa/shopify/callback",
-  "https://vehicles-quote-comics-clinical.trycloudflare.com/auth/shopify/embed/callback",
+  "https://inspiration-twenty-love-labour.trycloudflare.com/auth/shopify/callback",
+  "https://inspiration-twenty-love-labour.trycloudflare.com/authSa/shopify/callback",
+  "https://inspiration-twenty-love-labour.trycloudflare.com/auth/shopify/embed/callback",
   "https://localhost:3000/auth/shopify/callback",
   "https://localhost:3000/authSa/shopify/callback",
   "https://localhost:3000/auth/shopify/embed/callback"
